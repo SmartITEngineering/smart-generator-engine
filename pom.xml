@@ -36,6 +36,7 @@
         for content creation jobs, scheduling them, events of the job triggerring
         and storing the generated content.
   </description>
+  <url>http://smartitengineering.github.com/smart-generator-engine/</url>
   <organization>
     <name>Smart IT Engineering</name>
     <url>http://www.smartitengineering.com</url>
@@ -121,4 +122,7 @@
       </plugin>
     </plugins>
   </reporting>
+  <modules>
+    <module>engine-domains</module>
+  </modules>
 </project>

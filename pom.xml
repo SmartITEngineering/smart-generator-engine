@@ -125,4 +125,7 @@
   <modules>
     <module>engine-domains</module>
   </modules>
+  <properties>
+    <hub.version>0.1-rdbms-SNAPSHOT</hub.version>
+  </properties>
 </project>

@@ -3,8 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://www.smartitengineering.com/smart-cms/content/content-type-schema http://smart-cms.kenai.com/schemas/cms/content-type/dev/content-type-schema.xsd">
   <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Customer</name>
-    <displayName>Customer</displayName>
+    <name>Report</name>
+    <displayName>Report Instance</displayName>
+    <defType>ABSTRACT_TYPE</defType>
     <primaryField>name</primaryField>
     <fields>
       <field>
@@ -15,279 +16,160 @@
             <mimeType>text/plain</mimeType>
           </string>
         </value>
+        <search>
+          <index>true</index>
+          <store>true</store>
+        </search>
       </field>
       <field>
-        <name>address</name>
-        <displayName>Address</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>orders</name>
-        <displayName>Orders</displayName>
-        <value>
-          <collection>
-            <simple-value>
-              <content>
-                <definition>
-                  <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-                  <typeName>Order</typeName>
-                </definition>
-              </content>
-            </simple-value>
-          </collection>
-        </value>
-      </field>
-    </fields>
-  </contentType>
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Item</name>
-    <primaryField>skuid</primaryField>
-    <fields>
-      <field>
-        <name>skuid</name>
-        <displayName>SKU ID</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>price</name>
-        <displayName>Price</displayName>
-        <value>
-          <double />
-        </value>
-      </field>
-      <field>
-        <name>shippingWeight</name>
-        <displayName>Shipping Weight</displayName>
-        <value>
-          <double />
-        </value>
-      </field>
-      <field>
-        <name>description</name>
-        <displayName>Description</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-    </fields>
-  </contentType>
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Payment</name>
-    <defType>ABSTRACT_TYPE</defType>
-    <primaryField>trxId</primaryField>
-    <fields>
-      <field>
-        <name>trxId</name>
-        <displayName>Transaction ID</displayName>
-        <value>
-          <long />
-        </value>
-      </field>
-      <field>
-        <name>amount</name>
-        <displayName>Amount</displayName>
-        <value>
-          <double />
-        </value>
-      </field>
-    </fields>
-  </contentType>
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Cash</name>
-    <parent>
-      <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-      <typeName>Payment</typeName>
-    </parent>
-    <fields>
-      <field>
-        <name>cashTendered</name>
-        <displayName>Cash Tendered</displayName>
-        <value>
-          <boolean />
-        </value>
-      </field>
-    </fields>
-  </contentType>
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Check</name>
-    <parent>
-      <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-      <typeName>Payment</typeName>
-    </parent>
-    <fields>
-      <field>
-        <name>name</name>
-        <displayName>Name</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>bankID</name>
-        <displayName>Bank ID</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>authorized</name>
-        <displayName>Authorized</displayName>
-        <value>
-          <boolean />
-        </value>
-      </field>
-    </fields>
-  </contentType>
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Credit</name>
-    <parent>
-      <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-      <typeName>Payment</typeName>
-    </parent>
-    <fields>
-      <field>
-        <name>number</name>
-        <displayName>Card Number</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>type</name>
-        <displayName>Card Type</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>expDate</name>
-        <displayName>Expiry Date</displayName>
+        <name>triggerDate</name>
+        <displayName>Trigger Date</displayName>
         <value>
           <datetime />
         </value>
+        <search>
+          <index>true</index>
+          <store>true</store>
+        </search>
       </field>
       <field>
-        <name>authorized</name>
-        <displayName>Authorized</displayName>
+        <name>executionStartDate</name>
+        <displayName>Execution Started</displayName>
         <value>
-          <boolean />
+          <datetime />
         </value>
+        <search>
+          <index>true</index>
+          <store>true</store>
+        </search>
       </field>
-    </fields>
-  </contentType>
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>OrderDetail</name>
-    <defType>CONCRETE_COMPONENT</defType>
-    <primaryField>item</primaryField>
-    <fields>
       <field>
-        <name>quantity</name>
-        <displayName>Quantity</displayName>
+        <name>executionEndDate</name>
+        <displayName>Execution Ended</displayName>
         <value>
-          <double />
+          <datetime />
         </value>
+        <search>
+          <index>true</index>
+          <store>true</store>
+        </search>
       </field>
       <field>
-        <name>taxStatus</name>
-        <displayName>Tax Status</displayName>
-        <value>
-          <string>
-            <mimeType>text/plain</mimeType>
-          </string>
-        </value>
-      </field>
-      <field>
-        <name>item</name>
-        <displayName>Item</displayName>
+        <name>reportConfig</name>
+        <displayName>Report Configuration Generated From</displayName>
         <value>
           <content>
             <definition>
               <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-              <typeName>Item</typeName>
+              <typeName>ReportConfig</typeName>
             </definition>
             <availableForSearch>true</availableForSearch>
           </content>
         </value>
+        <search>
+          <index>true</index>
+          <store>false</store>
+        </search>
+      </field>
+      <field>
+        <name>params</name>
+        <displayName>Params to the generated Report</displayName>
+        <value>
+          <composition>
+            <content>
+              <definition>
+                <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
+                <typeName>Map</typeName>
+              </definition>
+              <availableForSearch>true</availableForSearch>
+            </content>
+          </composition>
+        </value>
+        <search>
+          <index>true</index>
+          <store>false</store>
+        </search>
       </field>
     </fields>
-    <representations>
-      <representation>
-        <name>getPriceForQuantity</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>ItemPriceForQuantity</name>
-          </internal>
-        </uri>
-      </representation>
-      <representation>
-        <name>getWeight</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>ItemWeight</name>
-          </internal>
-        </uri>
-      </representation>
-      <representation>
-        <name>calSubTotal</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>CalcSubTotal</name>
-          </internal>
-        </uri>
-      </representation>
-      <representation>
-        <name>calcWeight</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>CalcOrderItemWeight</name>
-          </internal>
-        </uri>
-      </representation>
-    </representations>
   </contentType>
   <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Order</name>
-    <primaryField>orderId</primaryField>
+    <name>Map</name>
+    <displayName>Map</displayName>
+    <defType>CONCRETE_COMPONENT</defType>
+    <primaryField>entries</primaryField>
     <fields>
       <field>
-        <name>orderId</name>
-        <displayName>Order ID</displayName>
+        <name>entries</name>
+        <displayName>Entries</displayName>
         <value>
-          <long />
+          <collection>
+            <simple-value>
+              <composition>
+                <field>
+                  <name>key</name>
+                  <displayName>Key</displayName>
+                  <value>
+                    <string>
+                      <mimeType>text/plain</mimeType>
+                    </string>
+                  </value>
+                  <required>true</required>
+                </field>
+                <field>
+                  <name>value</name>
+                  <displayName>Value</displayName>
+                  <value>
+                    <string>
+                      <mimeType>text/plain</mimeType>
+                    </string>
+                  </value>
+                  <required>true</required>
+                </field>
+              </composition>
+            </simple-value>
+          </collection>
         </value>
       </field>
+    </fields>
+  </contentType>
+  <contentType namespace="com.smartitengineering.generator.engine.domain">
+    <name>ReportConfig</name>
+    <primaryField>name</primaryField>
+    <fields>
       <field>
-        <name>date</name>
-        <displayName>Order Date</displayName>
+        <name>name</name>
+        <displayName>name</displayName>
         <value>
-          <datetime />
+          <string>
+            <mimeType>text/plain</mimeType>
+          </string>
         </value>
+        <search>
+          <index>true</index>
+        </search>
       </field>
       <field>
-        <name>orderStatus</name>
-        <displayName>Order Status</displayName>
+        <name>params</name>
+        <displayName>Params to Report</displayName>
+        <value>
+          <composition>
+            <content>
+              <definition>
+                <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
+                <typeName>Map</typeName>
+              </definition>
+              <availableForSearch>true</availableForSearch>
+            </content>
+          </composition>
+        </value>
+        <search>
+          <index>false</index>
+          <store>false</store>
+        </search>
+      </field>
+      <field>
+        <name>trigger</name>
+        <displayName>Trigger Cron Expression</displayName>
         <value>
           <string>
             <mimeType>text/plain</mimeType>
@@ -295,82 +177,172 @@
         </value>
       </field>
       <field>
-        <name>lineItems</name>
-        <displayName>Order Items</displayName>
+        <name>embeddedSourceCode</name>
+        <displayName>Embedded Code</displayName>
         <value>
-          <collection>
-            <simple-value>
-              <composition>
-                <content>
-                  <definition>
-                    <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-                    <typeName>OrderDetail</typeName>
-                  </definition>
-                </content>
-              </composition>
-            </simple-value>
-            <minSize>1</minSize>
-          </collection>
+          <composition>
+            <content>
+              <definition>
+                <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
+                <typeName>SourceCode</typeName>
+              </definition>
+            </content>
+          </composition>
         </value>
       </field>
       <field>
-        <name>payments</name>
-        <displayName>Payments</displayName>
-        <value>
-          <collection>
-            <simple-value>
-              <content>
-                <definition>
-                  <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-                  <typeName>Payment</typeName>
-                </definition>
-              </content>
-            </simple-value>
-            <minSize>1</minSize>
-          </collection>
-        </value>
-      </field>
-      <field>
-        <name>customer</name>
-        <displayName>Customer</displayName>
+        <name>codeOnDemand</name>
+        <displayName>Code on Demand</displayName>
         <value>
           <content>
             <definition>
               <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-              <typeName>Customer</typeName>
+              <typeName>CodeOnDemand</typeName>
             </definition>
           </content>
         </value>
       </field>
+      <field>
+        <name>schedules</name>
+        <displayName>Schedules for the trigger</displayName>
+        <value>
+          <collection>
+            <simple-value>
+              <datetime />
+            </simple-value>
+            <minSize>1</minSize>
+          </collection>
+        </value>
+        <search>
+          <index>true</index>
+        </search>
+      </field>
+      <field>
+        <name>emailConfig</name>
+        <displayName>Email Config</displayName>
+        <value>
+          <collection>
+            <simple-value>
+              <composition>
+                <field>
+                  <name>to</name>
+                  <displayName></displayName>
+                  <value>
+                    <collection>
+                      <simple-value>
+                        <string>
+                          <mimeType>text/plain</mimeType>
+                        </string>
+                      </simple-value>
+                    </collection>
+                  </value>
+                </field>
+                <field>
+                  <name>cc</name>
+                  <displayName></displayName>
+                  <value>
+                    <collection>
+                      <simple-value>
+                        <string>
+                          <mimeType>text/plain</mimeType>
+                        </string>
+                      </simple-value>
+                    </collection>
+                  </value>
+                </field>
+                <field>
+                  <name>bcc</name>
+                  <displayName></displayName>
+                  <value>
+                    <collection>
+                      <simple-value>
+                        <string>
+                          <mimeType>text/plain</mimeType>
+                        </string>
+                      </simple-value>
+                    </collection>
+                  </value>
+                </field>
+                <field>
+                  <name>subject</name>
+                  <displayName></displayName>
+                  <value>
+                    <string>
+                      <mimeType>text/plain</mimeType>
+                    </string>
+                  </value>
+                </field>
+                <field>
+                  <name>representationName</name>
+                  <displayName>Report's Representation To Distribute</displayName>
+                  <value>
+                    <string>
+                      <mimeType>text/plain</mimeType>
+                    </string>
+                  </value>
+                </field>
+              </composition>
+            </simple-value>
+          </collection>
+        </value>
+        <search>
+          <index>false</index>
+          <store>false</store>
+        </search>
+      </field>
     </fields>
-    <representations>
-      <representation>
-        <name>calcTax</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>CalcTax</name>
-          </internal>
-        </uri>
-      </representation>
-      <representation>
-        <name>calcTotal</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>CalcTotal</name>
-          </internal>
-        </uri>
-      </representation>
-      <representation>
-        <name>calcTotalWeight</name>
-        <mimeType>text/plain</mimeType>
-        <uri>
-          <internal>
-            <name>CalcOrderWeight</name>
-          </internal>
-        </uri>
-      </representation>
-    </representations>
+  </contentType>
+  <contentType namespace="com.smartitengineering.generator.engine.domain">
+    <name>CodeOnDemand</name>  
+    <displayName>Code On Demand</displayName>
+    <fields>
+      <field>
+        <name>code</name>
+        <displayName>Code</displayName>
+        <value>
+          <composition>
+            <content>
+              <definition>
+                <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
+                <typeName>SourceCode</typeName>
+              </definition>
+            </content>
+          </composition>
+        </value>
+      </field>
+    </fields>
+  </contentType>
+  <contentType namespace="com.smartitengineering.generator.engine.domain">
+    <name>SourceCode</name>  
+    <displayName>SourceCode</displayName>
+    <defType>CONCRETE_COMPONENT</defType>
+    <fields>
+      <field>
+        <name>code</name>
+        <displayName>Code</displayName>
+        <value>
+          <composition>
+            <field>
+              <name>embeddedCode</name>
+              <displayName>Embedded Code</displayName>
+              <value>
+                <string>
+                  <mimeType>text/plain</mimeType>
+                </string>
+              </value>
+            </field>
+            <field>
+              <name>codeType</name>
+              <displayName>Code Type</displayName>
+              <value>
+                <string>
+                  <mimeType>text/plain</mimeType>
+                </string>
+              </value>
+            </field>
+          </composition>
+        </value>
+      </field>
+    </fields>
   </contentType>
 </contentTypes>

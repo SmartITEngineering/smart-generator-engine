@@ -144,6 +144,7 @@
             <mimeType>text/plain</mimeType>
           </string>
         </value>
+        <required>true</required>
         <search>
           <index>true</index>
         </search>
@@ -175,6 +176,15 @@
             <mimeType>text/plain</mimeType>
           </string>
         </value>
+        <required>true</required>
+      </field>
+      <field>
+        <name>validTill</name>
+        <displayName>Auto Generation Valid Till</displayName>
+        <value>
+          <datetime />
+        </value>
+        <required>true</required>
       </field>
       <field>
         <name>embeddedSourceCode</name>
@@ -213,6 +223,7 @@
             <minSize>1</minSize>
           </collection>
         </value>
+        <required>true</required>
         <search>
           <index>true</index>
         </search>

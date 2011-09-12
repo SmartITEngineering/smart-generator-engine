@@ -124,6 +124,10 @@
   </reporting>
   <modules>
     <module>engine-domains</module>
+    <module>engine-service</module>
+    <module>engine-serviceImpl</module>
+    <module>engine-webservice</module>
+    <module>generator-guicebinder</module>
   </modules>
   <properties>
     <hub.version>0.1-rdbms-SNAPSHOT</hub.version>

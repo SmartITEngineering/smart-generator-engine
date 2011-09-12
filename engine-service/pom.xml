@@ -20,28 +20,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>jsr311-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-extensions-json</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.abdera</groupId>
-      <artifactId>abdera-extensions-opensearch</artifactId>
+      <groupId>com.smartitengineering.smart-dao</groupId>
+      <artifactId>smart-hbase-dao</artifactId>
     </dependency>
     <dependency>
       <groupId>com.smartitengineering.smart-util.rest</groupId>

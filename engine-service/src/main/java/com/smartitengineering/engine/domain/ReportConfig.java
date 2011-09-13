@@ -13,8 +13,8 @@ import java.util.Date;
  */
 public class ReportConfig {
 
-  String name;
-  Collection<Date> dates;
+  private String name;
+  private Collection<Date> dates;
 
   public ReportConfig() {
   }

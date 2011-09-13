@@ -128,6 +128,7 @@
     <module>engine-serviceImpl</module>
     <module>engine-webservice</module>
     <module>generator-guicebinder</module>
+    <module>engine-webservice-client</module>
   </modules>
   <properties>
     <hub.version>0.1-rdbms-SNAPSHOT</hub.version>

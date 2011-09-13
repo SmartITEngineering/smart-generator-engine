@@ -52,6 +52,11 @@
     </dependency>
     <dependency>
       <groupId>com.smartitengineering.sturtstest</groupId>
+      <artifactId>engine-service</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering.sturtstest</groupId>
       <artifactId>engine-webservice</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>

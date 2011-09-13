@@ -56,14 +56,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
     </dependency>
+  
     <dependency>
       <groupId>com.smartitengineering.sturtstest</groupId>
       <artifactId>engine-service</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.smartitengineering.generetor</groupId>
-      <artifactId>generator-guicebinder</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>

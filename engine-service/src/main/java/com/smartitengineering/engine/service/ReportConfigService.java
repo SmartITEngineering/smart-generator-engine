@@ -4,7 +4,8 @@
  */
 package com.smartitengineering.engine.service;
 
-import com.smartitengineering.engine.domain.ReportConfig;
+import com.smartitengineering.engine.domain.PersistentReportConfig;
+import java.util.Collection;
 
 /**
  *
@@ -12,9 +13,13 @@ import com.smartitengineering.engine.domain.ReportConfig;
  */
 public interface ReportConfigService {
 
-  public void save(ReportConfig reportConfig);
+  public void save(PersistentReportConfig reportConfig);
 
-  public void delete(ReportConfig reportConfig);
+  public void delete(PersistentReportConfig reportConfig);
 
-  public void update(ReportConfig reportConfig);
+  public void update(PersistentReportConfig reportConfig);
+
+  public PersistentReportConfig getById(long id);
+
+  public Collection<PersistentReportConfig> getAll();
 }

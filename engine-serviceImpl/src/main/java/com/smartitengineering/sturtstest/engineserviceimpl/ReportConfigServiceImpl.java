@@ -4,26 +4,35 @@
  */
 package com.smartitengineering.sturtstest.engineserviceimpl;
 
-import com.smartitengineering.engine.domain.ReportConfig;
-import com.smartitengineering.engine.service.ReportConfigService;
+import com.google.inject.Inject;
+import com.smartitengineering.engine.domain.PersistentReportConfig;
+import java.util.Collection;
 /**
  *
  * @author saumitra
  */
-public class ReportConfigServiceImpl implements ReportConfigService {
+public class ReportConfigServiceImpl extends AbstractReportConfigService {
+
+  @Inject
+
   
   @Override
-  public void save(ReportConfig reportConfig) {
+  public void save(PersistentReportConfig reportConfig) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
-  public void delete(ReportConfig reportConfig) {
+  public void delete(PersistentReportConfig reportConfig) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
-  public void update(ReportConfig reportConfig) {
+  public void update(PersistentReportConfig reportConfig) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
+  @Override
+  public Collection<PersistentReportConfig> getAll() {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 }

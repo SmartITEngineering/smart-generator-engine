@@ -4,7 +4,6 @@
  */
 package com.smartitengineering.sturtstest.engineserviceimpl;
 
-import com.google.inject.Inject;
 import com.smartitengineering.engine.domain.PersistentReportConfig;
 import java.util.Collection;
 /**
@@ -12,23 +11,20 @@ import java.util.Collection;
  * @author saumitra
  */
 public class ReportConfigServiceImpl extends AbstractReportConfigService {
-
-  @Inject
-
   
   @Override
   public void save(PersistentReportConfig reportConfig) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    commonWriteDao.save(reportConfig);
   }
 
   @Override
   public void delete(PersistentReportConfig reportConfig) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    commonWriteDao.delete(reportConfig);
   }
 
   @Override
   public void update(PersistentReportConfig reportConfig) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    commonWriteDao.update(reportConfig);
   }
 
   @Override

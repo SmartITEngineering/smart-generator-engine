@@ -8,19 +8,19 @@
     <version>0.1-SNAPSHOT</version>
   </parent>
   <groupId>com.smartitengineering.smart-generator-engine</groupId>
-  <artifactId>engine-service</artifactId>
+  <artifactId>engine-service-impl</artifactId>
   <packaging>jar</packaging>
   <version>0.1-SNAPSHOT</version>
-  <name>Smart Generator Engine Service API</name>
+  <name>Smart Generator Engine Service API Impl</name>
   <dependencies>
-    <dependency>
-      <groupId>com.smartitengineering.smart-generator-engine</groupId>
-      <artifactId>engine-domains</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering.smart-generator-engine</groupId>
+      <artifactId>engine-service</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

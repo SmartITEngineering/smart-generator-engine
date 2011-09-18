@@ -7,18 +7,15 @@
     <artifactId>smart-generator-engine</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  <groupId>com.smartitengineering.generetor</groupId>
-  <artifactId>generator-guicebinder</artifactId>
+  <groupId>com.smartitengineering.smart-generator-engine</groupId>
+  <artifactId>engine-guicebinder</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>generator-guicebinder</name>
-  <url>http://maven.apache.org</url>
+  <version>0.1-SNAPSHOT</version>
+  <name>Smart Generator Engine Guice Binder</name>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -33,32 +30,13 @@
       <artifactId>smart-bean-guice-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.smartitengineering.smart-dao</groupId>
-      <artifactId>smart-abstract-dao-decorator</artifactId>
+      <groupId>com.smartitengineering.smart-generator-engine</groupId>
+      <artifactId>engine-service-impl</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.smartitengineering.smart-dao</groupId>
-      <artifactId>solr-search-dao</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.smartitengineering.sturtstest</groupId>
-      <artifactId>engine-service</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.smartitengineering.sturtstest</groupId>
-      <artifactId>engine-serviceImpl</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.smartitengineering.sturtstest</groupId>
-      <artifactId>engine-service</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.smartitengineering.sturtstest</groupId>
-      <artifactId>engine-webservice</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>com.smartitengineering.smart-cms</groupId>
+      <artifactId>api-spi-guice-binder</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

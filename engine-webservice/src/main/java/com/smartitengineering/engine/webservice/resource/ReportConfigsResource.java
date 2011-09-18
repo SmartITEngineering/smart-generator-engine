@@ -48,7 +48,7 @@ public class ReportConfigsResource extends AbstractResource {
 
   public ReportConfigsResource() {
     adapter = new GenericAdapterImpl<ReportConfig, PersistentReportConfig>();
-    adapter.setHelper(new ReportConfigAdapterHelper());
+    //adapter.setHelper(new ReportConfigAdapterHelper());
   }
 
   @GET

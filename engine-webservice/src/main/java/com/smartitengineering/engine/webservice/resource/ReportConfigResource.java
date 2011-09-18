@@ -65,7 +65,7 @@ public class ReportConfigResource extends AbstractResource{
   public ReportConfigResource(@PathParam("id") Long id) {
     persistentReportConfig = Services.getInstance().getReportConfigService().getById(id);
     adapter = new GenericAdapterImpl<ReportConfig, PersistentReportConfig>();
-    adapter.setHelper(new ReportConfigAdapterHelper());
+   // adapter.setHelper(new ReportConfigAdapterHelper());
   }
 
 

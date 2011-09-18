@@ -13,21 +13,22 @@ import com.smartitengineering.util.bean.adapter.AbstractAdapterHelper;
  *
  * @author saumitra
  */
-public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfig, PersistentReportConfig>{
+public class ReportConfigAdapterHelper extends AbstractAdapterHelper<com.smartitengineering.engine.webservice.domain.ReportConfig, ReportConfig>{
 
   @Override
-  protected PersistentReportConfig newTInstance() {
-    return new PersistentReportConfig();
-  }
-
-  @Override
-  protected void mergeFromF2T(ReportConfig f, PersistentReportConfig t) {
+  protected ReportConfig newTInstance() {
     throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
-  protected ReportConfig convertFromT2F(PersistentReportConfig t) {
+  protected void mergeFromF2T(com.smartitengineering.engine.webservice.domain.ReportConfig f, ReportConfig t) {
     throw new UnsupportedOperationException("Not supported yet.");
   }
+
+  @Override
+  protected com.smartitengineering.engine.webservice.domain.ReportConfig convertFromT2F(ReportConfig t) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
+
 
 }

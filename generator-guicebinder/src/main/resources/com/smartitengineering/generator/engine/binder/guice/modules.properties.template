@@ -1,0 +1,3 @@
+contextName=com.smartitengineering.generator.engine.service
+modules=com.smartitengineering.generator.engine.domain.di.MasterModule,com.smartitengineering.generator.engine.guice.binder.APIModule
+ignoreMissingDependency=false

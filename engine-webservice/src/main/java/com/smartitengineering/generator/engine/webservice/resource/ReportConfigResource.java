@@ -5,10 +5,8 @@
 
 package com.smartitengineering.generator.engine.webservice.resource;
 
-import com.smartitengineering.engine.domain.PersistentReportConfig;
-import com.smartitengineering.engine.domain.ReportConfig;
+import com.smartitengineering.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
-import com.smartitengineering.generator.engine.webservice.adapter.ReportConfigAdapterHelper;
 import com.smartitengineering.util.bean.adapter.GenericAdapterImpl;
 import com.smartitengineering.util.rest.atom.server.AbstractResource;
 import com.sun.jersey.api.view.Viewable;
@@ -44,11 +42,11 @@ import org.apache.commons.lang.StringUtils;
 public class ReportConfigResource extends AbstractResource{
 
   @PathParam("id")
-  private Long id;
+  private String id;
   @Context
   private HttpServletRequest servletRequest;
-  private GenericAdapterImpl<ReportConfig, PersistentReportConfig> adapter;
-  private PersistentReportConfig persistentReportConfig;
+  private GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig> adapter;
+  private com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig;
   private static final Method CONFIG_CONTENT;
 
 
@@ -62,9 +60,9 @@ public class ReportConfigResource extends AbstractResource{
     }
   }
 
-  public ReportConfigResource(@PathParam("id") Long id) {
+  public ReportConfigResource(@PathParam("id") String id) {
     persistentReportConfig = Services.getInstance().getReportConfigService().getById(id);
-    adapter = new GenericAdapterImpl<ReportConfig, PersistentReportConfig>();
+    adapter = new GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig>();
    // adapter.setHelper(new ReportConfigAdapterHelper());
   }
 
@@ -124,7 +122,7 @@ public class ReportConfigResource extends AbstractResource{
   @POST
   @Path("/delete")
   public Response deletePost(ReportConfig reportConfig){
-    PersistentReportConfig persistentReportConfig = adapter.convert(reportConfig);
+    com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig = adapter.convert(reportConfig);
     try{
       Services.getInstance().getReportConfigService().delete(persistentReportConfig);
     }
@@ -163,7 +161,7 @@ public class ReportConfigResource extends AbstractResource{
   @Consumes(MediaType.APPLICATION_JSON)
   public Response update(ReportConfig reportConfig) {
 
-    PersistentReportConfig persistentReportConfig = adapter.convert(reportConfig);
+    com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig = adapter.convert(reportConfig);
 
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     try {
@@ -202,7 +200,7 @@ public class ReportConfigResource extends AbstractResource{
     return responseBuilder.build();
   }
 
-  private void basicUpdate(PersistentReportConfig persistantCoupon) {
+  private void basicUpdate(com.smartitengineering.generator.engine.domain.ReportConfig persistantCoupon) {
     Services.getInstance().getReportConfigService().update(persistentReportConfig);
   }
 

@@ -346,9 +346,11 @@
               <name>codeType</name>
               <displayName>Code Type</displayName>
               <value>
-                <string>
-                  <mimeType>text/plain</mimeType>
-                </string>
+                <enumeration>
+                  <choice>GROOVY</choice>
+                  <choice>RUBY</choice>
+                  <choice>JAVASCRIPT</choice>
+                </enumeration>
               </value>
             </field>
           </composition>

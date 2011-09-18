@@ -5,7 +5,7 @@
 package com.smartitengineering.generator.engine.webservice.resource;
 
 
-import com.smartitengineering.engine.webservice.domain.ReportConfig;
+import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
 import com.smartitengineering.util.bean.adapter.GenericAdapterImpl;
 import com.smartitengineering.util.rest.atom.server.AbstractResource;

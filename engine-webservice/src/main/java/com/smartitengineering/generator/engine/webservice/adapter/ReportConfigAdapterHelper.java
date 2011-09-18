@@ -2,10 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.smartitengineering.generator.engine.webservice.adapter;
 
-import com.smartitengineering.engine.webservice.domain.ReportConfig;
+import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.domain.ReportConfig.EmailConfig;
 import com.smartitengineering.util.bean.adapter.AbstractAdapterHelper;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.List;
  *
  * @author saumitra
  */
-public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig>{
+public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig> {
 
   @Override
   protected com.smartitengineering.generator.engine.domain.ReportConfig newTInstance() {
@@ -29,12 +28,18 @@ public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfi
     t.setId(f.getId());
     t.setValidTill(f.getValidTill());
     List<Date> schedulers = new ArrayList<Date>();
-    for (Date date : f.getSchedules()){
+    for (Date date : f.getSchedules()) {
       schedulers.add(date);
     }
     t.setSchedules(schedulers);
     List<EmailConfig> emailConfigs = new ArrayList<EmailConfig>();
-    for (EmailConfig emailConfig : t.getEmailConfig()){
+    for (com.smartitengineering.generator.engine.webservice.domain.EmailConfig config : f.getEmailConfig()) {
+      EmailConfig emailConfig = new EmailConfig();
+      emailConfig.setBcc(config.getBcc());
+      emailConfig.setCc(config.getCc());
+      emailConfig.setTo(config.getTo());
+      emailConfig.setRepresentationName(config.getRepresentationName());
+      emailConfig.setSubject(config.getSubject());
       emailConfigs.add(emailConfig);
     }
     t.setEmailConfig(emailConfigs);
@@ -48,16 +53,23 @@ public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfi
     reportConfig.setName(t.getName());
     reportConfig.setValidTill(t.getValidTill());
     List<Date> schedulers = new ArrayList<Date>();
-    for (Date date : t.getSchedules()){
+    for (Date date : t.getSchedules()) {
       schedulers.add(date);
     }
     reportConfig.setSchedules(schedulers);
-    List<EmailConfig> emailConfigs = new ArrayList<EmailConfig>();
-    for (EmailConfig emailConfig : t.getEmailConfig()){
-      emailConfigs.add(emailConfig);
+    List<com.smartitengineering.generator.engine.webservice.domain.EmailConfig> emailConfigs =
+                                                                                new ArrayList<com.smartitengineering.generator.engine.webservice.domain.EmailConfig>();
+    for (EmailConfig emailConfig : t.getEmailConfig()) {
+      com.smartitengineering.generator.engine.webservice.domain.EmailConfig config =
+                                                                            new com.smartitengineering.generator.engine.webservice.domain.EmailConfig();
+      config.setBcc(new ArrayList<String>(emailConfig.getBcc()));
+      config.setCc(new ArrayList<String>(emailConfig.getCc()));
+      config.setTo(new ArrayList<String>(emailConfig.getTo()));
+      config.setSubject(emailConfig.getSubject());
+      config.setRepresentationName(emailConfig.getRepresentationName());
+      emailConfigs.add(config);
     }
     reportConfig.setEmailConfig(emailConfigs);
     return reportConfig;
   }
-
 }

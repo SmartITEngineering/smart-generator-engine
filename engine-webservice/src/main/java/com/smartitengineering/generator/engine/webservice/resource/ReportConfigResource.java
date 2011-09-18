@@ -7,6 +7,7 @@ package com.smartitengineering.generator.engine.webservice.resource;
 
 import com.smartitengineering.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
+import com.smartitengineering.generator.engine.webservice.adapter.ReportConfigAdapterHelper;
 import com.smartitengineering.util.bean.adapter.GenericAdapterImpl;
 import com.smartitengineering.util.rest.atom.server.AbstractResource;
 import com.sun.jersey.api.view.Viewable;
@@ -63,7 +64,7 @@ public class ReportConfigResource extends AbstractResource{
   public ReportConfigResource(@PathParam("id") String id) {
     persistentReportConfig = Services.getInstance().getReportConfigService().getById(id);
     adapter = new GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig>();
-   // adapter.setHelper(new ReportConfigAdapterHelper());
+    adapter.setHelper(new ReportConfigAdapterHelper());
   }
 
 

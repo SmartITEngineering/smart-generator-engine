@@ -14,17 +14,26 @@ import java.util.Date;
  */
 public class ReportConfig {
 
+  String id;
   private String name;
   private Date validTill;
   private Collection<Date> schedules;
-  private Collection<com.smartitengineering.generator.engine.domain.ReportConfig.EmailConfig> emailConfigs;
+  private Collection<com.smartitengineering.generator.engine.domain.ReportConfig.EmailConfig> emailConfig;
 
-  public Collection<EmailConfig> getEmailConfigs() {
-    return emailConfigs;
+  public String getId() {
+    return id;
   }
 
-  public void setEmailConfigs(Collection<EmailConfig> emailConfigs) {
-    this.emailConfigs = emailConfigs;
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public Collection<EmailConfig> getEmailConfig() {
+    return emailConfig;
+  }
+
+  public void setEmailConfig(Collection<EmailConfig> emailConfig) {
+    this.emailConfig = emailConfig;
   }
 
   public String getName() {

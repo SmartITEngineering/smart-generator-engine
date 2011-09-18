@@ -18,6 +18,7 @@
  */
 package com.smartitengineering.generator.engine.webservice;
 
+import com.smartitengineering.generator.engine.guice.binder.Initializer;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class InitializerContextListener implements ServletContextListener {
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     // Create workspace and upload content types if necessary to CMS using its API
+    logger.info("DI Smart Generator Engine and Smart CMS");
+    Initializer.init();
   }
 
   @Override

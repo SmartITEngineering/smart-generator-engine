@@ -8,7 +8,7 @@ import com.smartitengineering.cms.api.content.Content;
 import java.util.Map;
 
 /**
- *
+ * The API to be used by external users to generate Report which are basically Content of CMS.
  * @author imyousuf
  */
 public interface ReportExecutor {

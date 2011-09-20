@@ -4,7 +4,6 @@
  */
 package com.smartitengineering.generator.engine.webservice.resource;
 
-
 import com.smartitengineering.generator.engine.service.ReportConfigFilter;
 import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
@@ -40,7 +39,6 @@ public class ReportConfigsResource extends AbstractResource {
   @Context
   private HttpServletRequest servletRequest;
   private GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig> adapter;
-
   @DefaultValue("10")
   @QueryParam("count")
   private Integer count;
@@ -52,14 +50,16 @@ public class ReportConfigsResource extends AbstractResource {
 
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
-  public Response get(Integer index , @PathParam("startDate") Date startDate , @PathParam("endDate") Date endDate , @PathParam("nameLike") String nameLike) {
+  public Response get(Integer index, @PathParam("startDate") Date startDate, @PathParam("endDate") Date endDate, @PathParam(
+      "nameLike") String nameLike) {
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     Feed atomFeed = getFeed("ReportConfigs", new Date());
     ReportConfigFilter reportConfigFilter = new ReportConfigFilter();
     reportConfigFilter.setNameLike(nameLike);
     reportConfigFilter.setScheduleRangeStart(startDate);
     reportConfigFilter.setScheduleRangeEnd(endDate);
-    Collection<com.smartitengineering.generator.engine.domain.ReportConfig> reportConfigs = Services.getInstance().getReportConfigService().searchConfigs(reportConfigFilter);
+    Collection<com.smartitengineering.generator.engine.domain.ReportConfig> reportConfigs = Services.getInstance().
+        getReportConfigService().searchConfigs(reportConfigFilter);
     if (reportConfigs != null && !reportConfigs.isEmpty()) {
       for (com.smartitengineering.generator.engine.domain.ReportConfig reportConfig : reportConfigs) {
         Entry reportConfigEntry = getAbderaFactory().newEntry();
@@ -67,7 +67,8 @@ public class ReportConfigsResource extends AbstractResource {
         reportConfigEntry.setTitle(reportConfig.getName());
 
         Link reportConfigLink = getAbderaFactory().newLink();
-        reportConfigLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).build(reportConfig.getId()).toString());
+        reportConfigLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).build(reportConfig.getId()).
+            toString());
         reportConfigLink.setRel(Link.REL_ALTERNATE);
         reportConfigLink.setMimeType(MediaType.APPLICATION_ATOM_XML);
 
@@ -81,8 +82,8 @@ public class ReportConfigsResource extends AbstractResource {
   @GET
   @Produces(MediaType.TEXT_HTML)
   @Path("/{index}")
-
-  public Response getHtmlIndex(@PathParam("index") Integer index , @PathParam("startDate") Date startDate , @PathParam("endDate") Date endDate , @PathParam("nameLike") String nameLike){
+  public Response getHtmlIndex(@PathParam("index") Integer index, @PathParam("startDate") Date startDate, @PathParam(
+      "endDate") Date endDate, @PathParam("nameLike") String nameLike) {
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     if (count == null) {
       count = 10;
@@ -91,7 +92,8 @@ public class ReportConfigsResource extends AbstractResource {
     reportConfigFilter.setNameLike(nameLike);
     reportConfigFilter.setScheduleRangeStart(startDate);
     reportConfigFilter.setScheduleRangeEnd(endDate);
-    Collection<com.smartitengineering.generator.engine.domain.ReportConfig> configs = Services.getInstance().getReportConfigService().searchConfigs(reportConfigFilter);
+    Collection<com.smartitengineering.generator.engine.domain.ReportConfig> configs = Services.getInstance().
+        getReportConfigService().searchConfigs(reportConfigFilter);
     servletRequest.setAttribute("index", index);
     servletRequest.setAttribute("total", Services.getInstance().getReportConfigService().searchConfigs(
         reportConfigFilter).size());

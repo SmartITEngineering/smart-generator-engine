@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.smartitengineering.generetor.enginewebserviceclient.Api;
+package com.smartitengineering.generetor.webserviceclient.resource.Api;
 
 import com.smartitengineering.util.rest.client.WritableResource;
 import org.apache.abdera.model.Feed;
@@ -17,5 +17,5 @@ public interface CongigsResource extends WritableResource<Feed> {
 
   public void createConfig(URI configUri);
 
-  public Collection<ConfigResource> getAllConfig();
+  public Collection<ConfigResource> searchConfig();
 }

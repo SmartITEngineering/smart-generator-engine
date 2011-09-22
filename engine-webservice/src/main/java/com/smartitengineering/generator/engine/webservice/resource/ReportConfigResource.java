@@ -109,7 +109,7 @@ public class ReportConfigResource extends AbstractResource{
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/content")
-  public Response getCoupon() {
+  public Response getConfig() {
     ResponseBuilder responseBuilder = Response.ok(adapter.convertInversely(persistentReportConfig));
     return responseBuilder.build();
   }
@@ -139,22 +139,6 @@ public class ReportConfigResource extends AbstractResource{
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     return responseBuilder.build();
  
-  }
-
-  @POST
-  @Path("/delete")
-  public Response deletePost() {
-    ResponseBuilder responseBuilder = Response.ok();
-    try {
-      Services.getInstance().getReportConfigService().delete(persistentReportConfig);
-      responseBuilder.status(Status.SEE_OTHER);
-    }
-    catch (Exception ex) {
-      servletRequest.setAttribute("error", ex.getMessage());
-      Viewable view = new Viewable("", adapter.convertInversely(persistentReportConfig));
-      responseBuilder.entity(view);
-    }
-    return responseBuilder.build();
   }
 
   @PUT

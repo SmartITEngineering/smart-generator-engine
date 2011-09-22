@@ -26,6 +26,7 @@
       <groupId>com.smartitengineering.smart-generator-engine</groupId>
       <artifactId>engine-webservice</artifactId>
       <version>${project.version}</version>
+      <classifier>classes</classifier>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

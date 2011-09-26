@@ -4,18 +4,18 @@
  */
 package com.smartitengineering.generetor.webserviceclient.resource.Api;
 
+import com.smartitengineering.generetor.webserviceclient.domain.Api.ReportConfig;
 import com.smartitengineering.util.rest.client.WritableResource;
 import org.apache.abdera.model.Feed;
-import java.net.URI;
 import java.util.Collection;
 
 /**
  *
  * @author saumitra
  */
-public interface CongigsResource extends WritableResource<Feed> {
+public interface ConfigsResource extends WritableResource<Feed> {
 
-  public void createConfig(URI configUri);
+  public ConfigsResource createConfig(ReportConfig reportConfig);
 
   public Collection<ConfigResource> searchConfig();
 }

@@ -306,6 +306,7 @@
   <contentType namespace="com.smartitengineering.generator.engine.domain">
     <name>CodeOnDemand</name>  
     <displayName>Code On Demand</displayName>
+    <primaryField>code</primaryField>
     <fields>
       <field>
         <name>code</name>
@@ -327,6 +328,7 @@
     <name>SourceCode</name>  
     <displayName>SourceCode</displayName>
     <defType>CONCRETE_COMPONENT</defType>
+    <primaryField>code</primaryField>
     <fields>
       <field>
         <name>code</name>

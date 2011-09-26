@@ -1,0 +1,13 @@
+
+  {
+    "tableName": "store",
+    "columnFamilyConfigurations": [
+      {
+        "familyName": "self"
+      },
+      {
+        "familyName": "configs"
+      }      
+    ]
+  }
+  

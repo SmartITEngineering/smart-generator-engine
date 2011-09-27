@@ -5,6 +5,7 @@
 
 package com.smartitengineering.generator.engine.webservice.resource;
 
+import com.smartitengineering.cms.api.content.Content;
 import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
 import com.smartitengineering.generator.engine.webservice.adapter.ReportConfigAdapterHelper;
@@ -14,6 +15,7 @@ import com.sun.jersey.api.view.Viewable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -31,6 +33,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilderException;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.apache.commons.lang.StringUtils;
@@ -102,6 +105,26 @@ public class ReportConfigResource extends AbstractResource{
     altLink.setRel(Link.REL_ALTERNATE);
     altLink.setMimeType(MediaType.APPLICATION_JSON);
     configFeed.addLink(altLink);
+
+    // add content link
+
+    Collection<Content> contents = Services.getInstance().getReportConfigService().getReport(persistentReportConfig.getId());
+    if(contents != null && !contents.isEmpty()){
+      for (Content content : contents){
+        Entry contentEntry = getAbderaFactory().newEntry();
+        contentEntry.setId(content.getContentId().toString());
+
+
+        Link contentLink = getAbderaFactory().newLink();
+        contentLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).build(content.getContentId().toString()).
+            toString());
+        contentLink.setRel(Link.REL_ALTERNATE);
+        contentLink.setMimeType(content.getRepresentation(id).getMimeType());
+
+        contentEntry.addLink(contentLink);
+        configFeed.addEntry(contentEntry);
+      }
+    }
 
     return configFeed;
   }

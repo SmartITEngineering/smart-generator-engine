@@ -9,6 +9,7 @@ package com.smartitengineering.generator.engine.webservice.resource;
  *
  * @author saumitra
  */
+
 public class ReportsResource {
 
 }

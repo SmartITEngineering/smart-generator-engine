@@ -8,7 +8,9 @@ import com.google.inject.AbstractModule;
 import com.smartitengineering.dao.hbase.ddl.HBaseTableGenerator;
 import com.smartitengineering.dao.hbase.ddl.config.json.ConfigurationJsonParser;
 import com.smartitengineering.generator.engine.guice.binder.Initializer;
+import com.smartitengineering.generetor.enginewebserviceclient.Api.Impl.ConfigsResourceImpl;
 import com.smartitengineering.generetor.webserviceclient.domain.Api.ReportConfig;
+import com.smartitengineering.generetor.webserviceclient.domain.Impl.ReportConfigImpl;
 import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigResource;
 import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigsResource;
 import com.smartitengineering.util.bean.guice.GuiceUtil;
@@ -50,15 +52,22 @@ public class ResourceTest {
     Initializer.init();
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
-    TEST_UTIL.shutdownMiniCluster();
-    jettyServer.stop();
-  }
+//  @AfterClass
+//  public static void tearDown() throws Exception {
+//    TEST_UTIL.shutdownMiniCluster();
+//    jettyServer.stop();
+//  }
 
   @Test
   public void testReportConfig(){
-    
+    ReportConfig reportConfig1 = new ReportConfigImpl();
+    reportConfig1.setId("test1");
+    reportConfig1.setName("TestConfig");
+    try{
+    Thread.sleep(3000);
+    }
+    catch(Exception ex){
+    }
   }
 
   public static class ConfigurationModule extends AbstractModule {

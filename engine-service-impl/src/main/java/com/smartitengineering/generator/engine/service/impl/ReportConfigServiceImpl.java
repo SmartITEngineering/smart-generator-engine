@@ -5,6 +5,10 @@
 package com.smartitengineering.generator.engine.service.impl;
 
 import com.google.inject.Inject;
+import com.smartitengineering.cms.api.content.Content;
+import com.smartitengineering.cms.api.content.Filter;
+import com.smartitengineering.cms.api.factory.SmartContentAPI;
+import com.smartitengineering.cms.api.workspace.WorkspaceId;
 import com.smartitengineering.dao.common.CommonReadDao;
 import com.smartitengineering.dao.common.CommonWriteDao;
 import com.smartitengineering.dao.common.queryparam.MatchMode;
@@ -52,6 +56,7 @@ public class ReportConfigServiceImpl implements ReportConfigService {
     commonWriteDao.update(reportConfig);
   }
 
+  @Override
   public Collection<ReportConfig> searchConfigs(ReportConfigFilter filter) {
     List<QueryParameter> queries = new ArrayList<QueryParameter>();
     if (filter.getCount() > 0) {
@@ -80,5 +85,14 @@ public class ReportConfigServiceImpl implements ReportConfigService {
           getScheduleRangeStart(), filter.getScheduleRangeEnd()));
     }
     return commonReadDao.getList(queries);
+  }
+
+  @Override
+  public Collection<Content> getReport(String configId) {
+
+    Filter filter = SmartContentAPI.getInstance().getContentLoader().craeteFilter();
+    filter.setWorkspaceId(null);
+    Collection<Content> contents = SmartContentAPI.getInstance().getContentLoader().search(filter).getResult();
+    return contents;
   }
 }

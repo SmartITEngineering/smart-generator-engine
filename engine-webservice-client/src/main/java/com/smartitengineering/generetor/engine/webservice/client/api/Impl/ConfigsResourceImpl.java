@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.smartitengineering.generetor.enginewebserviceclient.Api.Impl;
+package com.smartitengineering.generetor.engine.webservice.client.api.Impl;
 
-import com.smartitengineering.generetor.webserviceclient.domain.Api.ReportConfig;
-import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigResource;
-import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigsResource;
+import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigResource;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigsResource;
 import com.smartitengineering.util.rest.atom.AbstractFeedClientResource;
 import com.smartitengineering.util.rest.client.ClientUtil;
 import com.smartitengineering.util.rest.client.Resource;

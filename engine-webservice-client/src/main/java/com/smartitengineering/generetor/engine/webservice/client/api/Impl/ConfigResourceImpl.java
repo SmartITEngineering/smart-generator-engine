@@ -2,11 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.smartitengineering.generetor.enginewebserviceclient.Api.Impl;
+package com.smartitengineering.generetor.engine.webservice.client.api.Impl;
 
-import com.smartitengineering.generetor.webserviceclient.domain.Api.ReportConfig;
-import com.smartitengineering.generetor.webserviceclient.domain.Impl.ReportConfigImpl;
-import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigResource;
+import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigResource;
 import com.smartitengineering.util.rest.atom.AbstractFeedClientResource;
 import com.smartitengineering.util.rest.client.Resource;
 import com.smartitengineering.util.rest.client.ResourceLink;
@@ -29,8 +28,8 @@ public class ConfigResourceImpl extends AbstractFeedClientResource<Resource<? ex
     super(referrer, resouceLink);
     final ResourceLink altLink = getRelatedResourceUris().getFirst(Link.REL_ALTERNATE);
     addNestedResource("config",
-                      new SimpleResourceImpl<ReportConfigImpl>(this, altLink.getUri(), altLink.getMimeType(),
-                                                               ReportConfigImpl.class, null,
+                      new SimpleResourceImpl<ReportConfig>(this, altLink.getUri(), altLink.getMimeType(),
+                                                               ReportConfig.class, null,
                                                                false,
                                                                null,
                                                                null));

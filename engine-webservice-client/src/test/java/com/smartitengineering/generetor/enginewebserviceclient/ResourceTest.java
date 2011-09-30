@@ -8,17 +8,14 @@ import com.google.inject.AbstractModule;
 import com.smartitengineering.dao.hbase.ddl.HBaseTableGenerator;
 import com.smartitengineering.dao.hbase.ddl.config.json.ConfigurationJsonParser;
 import com.smartitengineering.generator.engine.guice.binder.Initializer;
-import com.smartitengineering.generetor.enginewebserviceclient.Api.Impl.ConfigsResourceImpl;
-import com.smartitengineering.generetor.webserviceclient.domain.Api.ReportConfig;
-import com.smartitengineering.generetor.webserviceclient.domain.Impl.ReportConfigImpl;
-import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigResource;
-import com.smartitengineering.generetor.webserviceclient.resource.Api.ConfigsResource;
+import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigResource;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigsResource;
 import com.smartitengineering.util.bean.guice.GuiceUtil;
 import java.util.Properties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.eclipse.jetty.server.Server;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,16 +54,15 @@ public class ResourceTest {
 //    TEST_UTIL.shutdownMiniCluster();
 //    jettyServer.stop();
 //  }
-
   @Test
-  public void testReportConfig(){
-    ReportConfig reportConfig1 = new ReportConfigImpl();
+  public void testReportConfig() {
+    ReportConfig reportConfig1 = new ReportConfig();
     reportConfig1.setId("test1");
     reportConfig1.setName("TestConfig");
-    try{
-    Thread.sleep(3000);
+    try {
+      Thread.sleep(3000);
     }
-    catch(Exception ex){
+    catch (Exception ex) {
     }
   }
 

@@ -126,6 +126,7 @@
     <module>engine-domains</module>
     <module>engine-service</module>
     <module>engine-service-impl</module>
+    <module>engine-webservice-common</module>
     <module>engine-webservice</module>
     <module>generator-guicebinder</module>
     <module>engine-webservice-client</module>

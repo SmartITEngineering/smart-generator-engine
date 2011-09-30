@@ -86,13 +86,4 @@ public class ReportConfigServiceImpl implements ReportConfigService {
     }
     return commonReadDao.getList(queries);
   }
-
-  @Override
-  public Collection<Content> getReport(String configId) {
-
-    Filter filter = SmartContentAPI.getInstance().getContentLoader().craeteFilter();
-    filter.setWorkspaceId(null);
-    Collection<Content> contents = SmartContentAPI.getInstance().getContentLoader().search(filter).getResult();
-    return contents;
-  }
 }

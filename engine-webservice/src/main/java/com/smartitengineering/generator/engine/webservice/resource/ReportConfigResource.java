@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.smartitengineering.generator.engine.webservice.resource;
 
 import com.smartitengineering.cms.api.content.Content;
+import com.smartitengineering.generator.engine.service.ReportFilter;
 import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
 import com.smartitengineering.generator.engine.webservice.adapter.ReportConfigAdapterHelper;
@@ -43,7 +43,7 @@ import org.apache.commons.lang.StringUtils;
  * @author saumitra
  */
 @Path("/reportconfigs/id/{id}")
-public class ReportConfigResource extends AbstractResource{
+public class ReportConfigResource extends AbstractResource {
 
   @PathParam("id")
   private String id;
@@ -53,8 +53,7 @@ public class ReportConfigResource extends AbstractResource{
   private com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig;
   private static final Method CONFIG_CONTENT;
 
-
-  static{
+  static {
     try {
       CONFIG_CONTENT = ReportConfigResource.class.getMethod("getConfig");
     }
@@ -70,8 +69,6 @@ public class ReportConfigResource extends AbstractResource{
     adapter.setHelper(new ReportConfigAdapterHelper());
   }
 
-
-
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
@@ -79,7 +76,7 @@ public class ReportConfigResource extends AbstractResource{
     if (persistentReportConfig == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    Feed configFeed =  getConfigFeed();
+    Feed configFeed = getConfigFeed();
     responseBuilder = Response.ok(configFeed);
     return responseBuilder.build();
   }
@@ -101,30 +98,13 @@ public class ReportConfigResource extends AbstractResource{
 
     // add a alternate link
     Link altLink = getAbderaFactory().newLink();
-    altLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).path(CONFIG_CONTENT).build(persistentReportConfig.getId()).toASCIIString());
+    altLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).path(CONFIG_CONTENT).build(persistentReportConfig.
+        getId()).toASCIIString());
     altLink.setRel(Link.REL_ALTERNATE);
     altLink.setMimeType(MediaType.APPLICATION_JSON);
     configFeed.addLink(altLink);
 
-    // add content link
-
-    Collection<Content> contents = Services.getInstance().getReportConfigService().getReport(persistentReportConfig.getId());
-    if(contents != null && !contents.isEmpty()){
-      for (Content content : contents){
-        Entry contentEntry = getAbderaFactory().newEntry();
-        contentEntry.setId(content.getContentId().toString());
-
-
-        Link contentLink = getAbderaFactory().newLink();
-        contentLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).build(content.getContentId().toString()).
-            toString());
-        contentLink.setRel(Link.REL_ALTERNATE);
-        contentLink.setMimeType(content.getRepresentation(id).getMimeType());
-
-        contentEntry.addLink(contentLink);
-        configFeed.addEntry(contentEntry);
-      }
-    }
+    //TODO add link to its reports
 
     return configFeed;
   }
@@ -139,29 +119,31 @@ public class ReportConfigResource extends AbstractResource{
 
   @GET
   @Produces(MediaType.TEXT_HTML)
-  public Response getHtml(){
+  public Response getHtml() {
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     return responseBuilder.build();
   }
+
   @POST
   @Path("/delete")
-  public Response deletePost(ReportConfig reportConfig){
+  public Response deletePost(ReportConfig reportConfig) {
     com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig = adapter.convert(reportConfig);
-    try{
+    try {
       Services.getInstance().getReportConfigService().delete(persistentReportConfig);
     }
-    catch(Exception ex){
+    catch (Exception ex) {
       servletRequest.setAttribute("error", ex);
     }
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     return responseBuilder.build();
   }
+
   @DELETE
-  public Response delete (){
+  public Response delete() {
     Services.getInstance().getReportConfigService().delete(persistentReportConfig);
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     return responseBuilder.build();
- 
+
   }
 
   @PUT
@@ -208,6 +190,15 @@ public class ReportConfigResource extends AbstractResource{
     return responseBuilder.build();
   }
 
+  @Path(RootResource.REPORTS)
+  public ReportsResource getReportsForThisConfig() {
+    final ReportFilter filter = new ReportFilter();
+    filter.setConfigId(id);
+    final ReportsResource reportsResource = getResourceContext().getResource(ReportsResource.class);
+    reportsResource.setReportFilter(filter);
+    return reportsResource;
+  }
+
   private void basicUpdate(com.smartitengineering.generator.engine.domain.ReportConfig persistantCoupon) {
     Services.getInstance().getReportConfigService().update(persistentReportConfig);
   }
@@ -216,5 +207,4 @@ public class ReportConfigResource extends AbstractResource{
   protected String getAuthor() {
     return "Smart Generator";
   }
-
 }

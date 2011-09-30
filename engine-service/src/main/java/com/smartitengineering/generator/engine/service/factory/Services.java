@@ -5,6 +5,7 @@
 package com.smartitengineering.generator.engine.service.factory;
 
 import com.smartitengineering.generator.engine.service.ReportConfigService;
+import com.smartitengineering.generator.engine.service.ReportService;
 import com.smartitengineering.util.bean.BeanFactoryRegistrar;
 import com.smartitengineering.util.bean.annotations.Aggregator;
 import com.smartitengineering.util.bean.annotations.InjectableField;
@@ -17,9 +18,10 @@ import com.smartitengineering.util.bean.annotations.InjectableField;
 public class Services {
 
   public static final String CONTEXT_NAME = "com.smartitengineering.generator.engine.service";
-
   @InjectableField
   private ReportConfigService reportConfigService;
+  @InjectableField
+  private ReportService reportService;
 
   private Services() {
   }
@@ -30,6 +32,14 @@ public class Services {
 
   public void setReportConfigService(ReportConfigService reportConfigService) {
     this.reportConfigService = reportConfigService;
+  }
+
+  public ReportService getReportService() {
+    return reportService;
+  }
+
+  public void setReportService(ReportService reportService) {
+    this.reportService = reportService;
   }
   private static Services services;
 

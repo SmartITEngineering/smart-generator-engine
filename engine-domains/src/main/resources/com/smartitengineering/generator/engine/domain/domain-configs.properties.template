@@ -1,0 +1,4 @@
+com.smartitengineering.generator.engine.domains.workspaceId.namespace=${smart.generator.engine.workspaceId.namespace}
+com.smartitengineering.generator.engine.domains.workspaceId.name=${smart.generator.engine.workspaceId.name}
+com.smartitengineering.generator.engine.domains.report.namespace=${smart.generator.engine.contentType.report.namespace}
+com.smartitengineering.generator.engine.domains.report.name=${smart.generator.engine.contentType.report.name}

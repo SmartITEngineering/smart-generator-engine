@@ -22,6 +22,7 @@ import org.apache.abdera.model.Feed;
 public class RootResource extends AbstractResource {
   
   public static final String CONFIGS = "reportconfigs";
+  public static final String REPORTS = "reports";
   
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
@@ -39,6 +40,11 @@ public class RootResource extends AbstractResource {
   @Path(CONFIGS)
   public ReportConfigsResource getConfigs() {
     return getResourceContext().getResource(ReportConfigsResource.class);
+  }
+  
+  @Path(REPORTS)
+  public ReportsResource getReports() {
+    return getResourceContext().getResource(ReportsResource.class);
   }
   
   @Override

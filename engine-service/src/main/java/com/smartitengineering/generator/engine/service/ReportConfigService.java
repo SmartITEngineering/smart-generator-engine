@@ -4,7 +4,6 @@
  */
 package com.smartitengineering.generator.engine.service;
 
-import com.smartitengineering.cms.api.content.Content;
 import com.smartitengineering.generator.engine.domain.ReportConfig;
 import java.util.Collection;
 
@@ -24,5 +23,4 @@ public interface ReportConfigService {
 
   public Collection<ReportConfig> searchConfigs(ReportConfigFilter filter);
 
-  public Collection<Content> getReport (String configId);
 }

@@ -2,8 +2,8 @@
 <contentTypes xmlns="http://www.smartitengineering.com/smart-cms/content/content-type-schema" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://www.smartitengineering.com/smart-cms/content/content-type-schema http://smart-cms.kenai.com/schemas/cms/content-type/dev/content-type-schema.xsd">
-  <contentType namespace="com.smartitengineering.generator.engine.domain">
-    <name>Report</name>
+  <contentType namespace="${smart.generator.engine.contentType.report.namespace}">
+    <name>${smart.generator.engine.contentType.report.name}</name>
     <displayName>Report Instance</displayName>
     <defType>ABSTRACT_TYPE</defType>
     <primaryField>name</primaryField>

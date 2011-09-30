@@ -129,6 +129,12 @@
     </dependency>
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>com.smartitengineering.smart-cms</groupId>
@@ -136,7 +142,7 @@
         <version>${smart.cms.version}</version>
         <configuration>
           <outputDirectory>${project.build.directory}/generated-sources/cms-pojo/</outputDirectory>
-          <workspaceId>com.smartitengineering:generator-engine</workspaceId>
+          <workspaceId>${smart.generator.engine.workspaceId.namespace}:${smart.generator.engine.workspaceId.name}</workspaceId>
         </configuration>
         <executions>
           <execution>
@@ -146,7 +152,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <contentTypeResource>${basedir}/src/main/resources/com/smartitengineering/generator/engine/domain/domain-content-type.xml</contentTypeResource>
+              <contentTypeResource>${project.build.directory}/classes/com/smartitengineering/generator/engine/domain/domain-content-type.xml</contentTypeResource>
               <packageForGuiceMasterModule>com.smartitengineering.generator.engine.domain.di</packageForGuiceMasterModule>
             </configuration>
           </execution>
@@ -156,6 +162,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+          <execution>
+            <id>filter-resources</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
           <execution>
             <id>copy-solr-configs</id>
             <phase>process-resources</phase>
@@ -247,5 +260,9 @@
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <smart.generator.engine.workspaceId.namespace>com.smartitengineering</smart.generator.engine.workspaceId.namespace>
+    <smart.generator.engine.workspaceId.name>generator-engine</smart.generator.engine.workspaceId.name>
+    <smart.generator.engine.contentType.report.namespace>com.smartitengineering.generator.engine.domain</smart.generator.engine.contentType.report.namespace>
+    <smart.generator.engine.contentType.report.name>Report</smart.generator.engine.contentType.report.name>
   </properties>
 </project>

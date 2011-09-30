@@ -20,10 +20,10 @@ import org.apache.abdera.model.Feed;
  */
 @Path("/")
 public class RootResource extends AbstractResource {
-  
+
   public static final String CONFIGS = "reportconfigs";
   public static final String REPORTS = "reports";
-  
+
   @GET
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get() {
@@ -31,22 +31,23 @@ public class RootResource extends AbstractResource {
     Feed feed = getFeed("root", "Smart Generator Engine - Root Resource", new Date());
     builder.entity(feed);
     feed.addLink(getLink(getRelativeURIBuilder().path(CONFIGS).build(), CONFIGS, MediaType.APPLICATION_ATOM_XML));
+    feed.addLink(getLink(getRelativeURIBuilder().path(REPORTS).build(), REPORTS, MediaType.APPLICATION_ATOM_XML));
     CacheControl control = new CacheControl();
     control.setMaxAge(10800);
     builder.cacheControl(control);
     return builder.build();
   }
-  
+
   @Path(CONFIGS)
   public ReportConfigsResource getConfigs() {
     return getResourceContext().getResource(ReportConfigsResource.class);
   }
-  
+
   @Path(REPORTS)
   public ReportsResource getReports() {
     return getResourceContext().getResource(ReportsResource.class);
   }
-  
+
   @Override
   protected String getAuthor() {
     return "Smart Generator Engine";

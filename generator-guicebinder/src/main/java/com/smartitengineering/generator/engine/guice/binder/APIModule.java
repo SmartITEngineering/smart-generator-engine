@@ -22,6 +22,7 @@ import java.util.Properties;
  */
 public class APIModule extends AbstractModule {
 
+  public static final String WORKSPACE_PROPS = "domainProps";
   private final String workspaceIdNamespace;
   private final String workspaceIdName;
   private final String reportNamespace;
@@ -36,7 +37,7 @@ public class APIModule extends AbstractModule {
     }
     else {
       PropertiesLocator propertiesLocator = new PropertiesLocator();
-      propertiesLocator.setSmartLocations(properties.getProperty("domainProps"));
+      propertiesLocator.setSmartLocations(properties.getProperty(WORKSPACE_PROPS));
       Properties mainProps = new Properties();
       try {
         propertiesLocator.loadProperties(mainProps);

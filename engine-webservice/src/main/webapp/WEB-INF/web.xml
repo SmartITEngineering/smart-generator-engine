@@ -14,7 +14,7 @@
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>com.smartitengineering.generator.engine.webservice.resource</param-value>
+      <param-value>com.smartitengineering.generator.engine.webservice.resource;com.smartitengineering.generator.engine.webservice.providers</param-value>
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>

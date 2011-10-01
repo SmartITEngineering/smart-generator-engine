@@ -1,0 +1,4 @@
+host=localhost
+port=10080
+contextPath=/generator-engine/
+baseUri=

@@ -31,7 +31,6 @@ public class ConfigsResourceImpl extends AbstractFeedClientResource<Resource<? e
 
   @Override
   protected void processClientConfig(ClientConfig cc) {
-    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
@@ -41,7 +40,7 @@ public class ConfigsResourceImpl extends AbstractFeedClientResource<Resource<? e
 
   @Override
   public ConfigsResource createConfig(ReportConfig reportConfig) {
-    ClientResponse response = post(MediaType.APPLICATION_JSON,reportConfig , ClientResponse.Status.CREATED);
+    ClientResponse response = post(MediaType.APPLICATION_JSON, reportConfig, ClientResponse.Status.CREATED);
     if (response.getLocation() == null) {
       logger.info("response.getLocation is null for reportconfig resource");
     }

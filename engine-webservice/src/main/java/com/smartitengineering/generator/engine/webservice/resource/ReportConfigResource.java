@@ -4,18 +4,15 @@
  */
 package com.smartitengineering.generator.engine.webservice.resource;
 
-import com.smartitengineering.cms.api.content.Content;
 import com.smartitengineering.generator.engine.service.ReportFilter;
 import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
 import com.smartitengineering.generator.engine.service.factory.Services;
 import com.smartitengineering.generator.engine.webservice.adapter.ReportConfigAdapterHelper;
 import com.smartitengineering.util.bean.adapter.GenericAdapterImpl;
 import com.smartitengineering.util.rest.atom.server.AbstractResource;
-import com.sun.jersey.api.view.Viewable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
-import java.util.Collection;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -33,7 +30,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilderException;
-import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +38,6 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author saumitra
  */
-@Path("/reportconfigs/id/{id}")
 public class ReportConfigResource extends AbstractResource {
 
   @PathParam("id")
@@ -50,7 +45,7 @@ public class ReportConfigResource extends AbstractResource {
   @Context
   private HttpServletRequest servletRequest;
   private GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig> adapter;
-  private com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig;
+  private final com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig;
   private static final Method CONFIG_CONTENT;
 
   static {
@@ -127,9 +122,9 @@ public class ReportConfigResource extends AbstractResource {
   @POST
   @Path("/delete")
   public Response deletePost(ReportConfig reportConfig) {
-    com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig = adapter.convert(reportConfig);
+    com.smartitengineering.generator.engine.domain.ReportConfig persistentConfig = adapter.convert(reportConfig);
     try {
-      Services.getInstance().getReportConfigService().delete(persistentReportConfig);
+      Services.getInstance().getReportConfigService().delete(persistentConfig);
     }
     catch (Exception ex) {
       servletRequest.setAttribute("error", ex);
@@ -151,11 +146,11 @@ public class ReportConfigResource extends AbstractResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response update(ReportConfig reportConfig) {
 
-    com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig = adapter.convert(reportConfig);
+    com.smartitengineering.generator.engine.domain.ReportConfig persistentConfig = adapter.convert(reportConfig);
 
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     try {
-      basicUpdate(persistentReportConfig);
+      basicUpdate(persistentConfig);
       responseBuilder = Response.ok(getConfigFeed());
     }
     catch (Exception ex) {
@@ -199,8 +194,8 @@ public class ReportConfigResource extends AbstractResource {
     return reportsResource;
   }
 
-  private void basicUpdate(com.smartitengineering.generator.engine.domain.ReportConfig persistantCoupon) {
-    Services.getInstance().getReportConfigService().update(persistentReportConfig);
+  private void basicUpdate(com.smartitengineering.generator.engine.domain.ReportConfig persistentConfig) {
+    Services.getInstance().getReportConfigService().update(persistentConfig);
   }
 
   @Override

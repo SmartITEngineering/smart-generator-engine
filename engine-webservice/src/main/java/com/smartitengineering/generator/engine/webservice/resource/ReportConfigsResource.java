@@ -17,6 +17,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -87,9 +88,12 @@ public class ReportConfigsResource extends AbstractResource {
     catch (Exception ex) {
       servletRequest.setAttribute("error", ex.getMessage());
     }
-
     return responseBuilder.build();
+  }
 
+  @Path("id/{id}")
+  public ReportConfigResource getReportConfig() {
+    return getResourceContext().getResource(ReportConfigResource.class);
   }
 
   public void basicPost(com.smartitengineering.generator.engine.domain.ReportConfig reportConfig) {

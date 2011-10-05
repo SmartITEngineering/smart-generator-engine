@@ -15,6 +15,9 @@ import com.smartitengineering.generator.engine.service.impl.ReportConfigServiceI
 import com.smartitengineering.generator.engine.service.impl.ReportServiceImpl;
 import com.smartitengineering.util.bean.PropertiesLocator;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.apache.commons.lang.math.NumberUtils;
 
 /**
  *
@@ -23,10 +26,14 @@ import java.util.Properties;
 public class APIModule extends AbstractModule {
 
   public static final String WORKSPACE_PROPS = "domainProps";
+  public static final String CONCURRENT_REPORT_THREADS_PROPS = "concurrentReportThreads";
+  public static final String REPORT_EVENT_BATCH_SIZE_PROPS = "reportEventBatchSize";
   private final String workspaceIdNamespace;
   private final String workspaceIdName;
   private final String reportNamespace;
   private final String reportName;
+  private final int concurrentReportThreads;
+  private final int reportEventScheudleBatchSize;
 
   public APIModule(Properties properties) {
     if (properties == null) {
@@ -34,6 +41,8 @@ public class APIModule extends AbstractModule {
       workspaceIdName = "";
       reportNamespace = "";
       reportName = "";
+      concurrentReportThreads = 4;
+      reportEventScheudleBatchSize = 100;
     }
     else {
       PropertiesLocator propertiesLocator = new PropertiesLocator();
@@ -51,6 +60,8 @@ public class APIModule extends AbstractModule {
       reportNamespace = mainProps.getProperty(
           "com.smartitengineering.generator.engine.domains.report.namespace", "");
       reportName = mainProps.getProperty("com.smartitengineering.generator.engine.domains.report.name", "");
+      concurrentReportThreads = NumberUtils.toInt(properties.getProperty(CONCURRENT_REPORT_THREADS_PROPS, "4"), 4);
+      reportEventScheudleBatchSize = NumberUtils.toInt(properties.getProperty(REPORT_EVENT_BATCH_SIZE_PROPS, "10"), 100);
     }
   }
 
@@ -62,7 +73,19 @@ public class APIModule extends AbstractModule {
         workspaceIdNamespace, workspaceIdName);
     final ContentTypeId reportTypeId = SmartContentAPI.getInstance().getContentTypeLoader().createContentTypeId(
         workspaceId, reportNamespace, reportName);
-    bind(WorkspaceId.class).annotatedWith(Names.named("workspaceId")).toInstance(workspaceId);
-    bind(ContentTypeId.class).annotatedWith(Names.named("reportContentTypeId")).toInstance(reportTypeId);
+    bind(WorkspaceId.class).annotatedWith(Names.named(ReportServiceImpl.INJECT_NAME_WORKSPACE_ID)).toInstance(
+        workspaceId);
+    bind(ContentTypeId.class).annotatedWith(Names.named(ReportServiceImpl.INJECT_NAME_REPORT_CONTENT_TYPE_ID)).
+        toInstance(reportTypeId);
+    bind(int.class).annotatedWith(Names.named(ReportConfigServiceImpl.INJECT_NAME_NUM_OF_SCHEDULES)).toInstance(
+        reportEventScheudleBatchSize);
+    try {
+      ExecutorService service = Executors.newFixedThreadPool(concurrentReportThreads);
+      bind(ExecutorService.class).annotatedWith(Names.named(ReportConfigServiceImpl.INJECT_NAME_EXECUTION_SERVICE)).
+          toInstance(service);
+    }
+    catch (Exception ex) {
+      throw new IllegalStateException(ex);
+    }
   }
 }

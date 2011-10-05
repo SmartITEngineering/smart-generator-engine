@@ -133,6 +133,73 @@
     </fields>
   </contentType>
   <contentType namespace="com.smartitengineering.generator.engine.domain">
+    <name>ReportEvent</name>
+    <displayName>ReportEvent</displayName>
+    <primaryField>dateReportScheduledFor</primaryField>
+    <fields>
+      <field>
+        <name>dateReportScheduledFor</name>
+        <displayName>Key</displayName>
+        <value>
+          <datetime />
+        </value>
+        <required>true</required>
+        <search>
+          <index>false</index>
+          <store>false</store>
+        </search>
+      </field>
+      <field>
+        <name>reportConfig</name>
+        <displayName>Report Configuration Generated From</displayName>
+        <value>
+          <content>
+            <definition>
+              <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
+              <typeName>ReportConfig</typeName>
+            </definition>
+            <availableForSearch>false</availableForSearch>
+          </content>
+        </value>
+        <required>true</required>
+        <search>
+          <index>false</index>
+          <store>false</store>
+        </search>
+      </field>
+      <field>
+        <name>eventStatus</name>
+        <displayName>Status of the event</displayName>
+        <value>
+          <enumeration>
+            <choice>Pending</choice>
+            <choice>In_Progress</choice>
+            <choice>Finished</choice>
+            <choice>Error</choice>
+          </enumeration>
+        </value>
+        <required>true</required>
+        <search>
+          <index>true</index>
+          <store>true</store>
+        </search>
+      </field>
+      <field>
+        <name>additionalStatusInfo</name>
+        <displayName>Additional information for status</displayName>
+        <value>
+          <string>
+            <mimeType>text/plain</mimeType>
+          </string>
+        </value>
+        <search>
+          <index>false</index>
+          <store>false</store>
+        </search>
+      </field>
+    </fields>
+  </contentType>
+  <contentType namespace="com.smartitengineering.generator.engine.domain">
     <name>ReportConfig</name>
     <primaryField>name</primaryField>
     <fields>
@@ -143,6 +210,17 @@
           <string>
             <mimeType>text/plain</mimeType>
           </string>
+        </value>
+        <required>true</required>
+        <search>
+          <index>true</index>
+        </search>
+      </field>
+      <field>
+        <name>eventsCreated</name>
+        <displayName>Events created for tiggering</displayName>
+        <value>
+          <boolean />
         </value>
         <required>true</required>
         <search>
@@ -185,6 +263,10 @@
           <datetime />
         </value>
         <required>true</required>
+        <search>
+          <index>true</index>
+          <store>false</store>
+        </search>
       </field>
       <field>
         <name>embeddedSourceCode</name>
@@ -211,22 +293,6 @@
             </definition>
           </content>
         </value>
-      </field>
-      <field>
-        <name>schedules</name>
-        <displayName>Schedules for the trigger</displayName>
-        <value>
-          <collection>
-            <simple-value>
-              <datetime />
-            </simple-value>
-            <minSize>1</minSize>
-          </collection>
-        </value>
-        <required>true</required>
-        <search>
-          <index>true</index>
-        </search>
       </field>
       <field>
         <name>emailConfig</name>

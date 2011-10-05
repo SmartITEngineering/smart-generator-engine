@@ -48,14 +48,11 @@ public class ReportConfigsResource extends AbstractResource {
   @Produces(MediaType.APPLICATION_ATOM_XML)
   public Response get(@DefaultValue("10") @QueryParam("count") Integer count,
                       @DefaultValue("0") @QueryParam("start") Integer index,
-                      @QueryParam("startDate") Date startDate, @QueryParam("endDate") Date endDate,
                       @QueryParam("nameLike") String nameLike) {
     ResponseBuilder responseBuilder = Response.status(Status.OK);
     Feed atomFeed = getFeed("ReportConfigs", new Date());
     ReportConfigFilter reportConfigFilter = new ReportConfigFilter();
     reportConfigFilter.setNameLike(nameLike);
-    reportConfigFilter.setScheduleRangeStart(startDate);
-    reportConfigFilter.setScheduleRangeEnd(endDate);
     Collection<com.smartitengineering.generator.engine.domain.ReportConfig> reportConfigs = Services.getInstance().
         getReportConfigService().searchConfigs(reportConfigFilter);
     if (reportConfigs != null && !reportConfigs.isEmpty()) {

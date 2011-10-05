@@ -27,12 +27,15 @@ import org.apache.commons.lang.StringUtils;
  * @author imyousuf
  */
 public class ReportServiceImpl implements ReportService {
+  
+  public static final String INJECT_NAME_WORKSPACE_ID = "workspaceId";
+  public static final String INJECT_NAME_REPORT_CONTENT_TYPE_ID = "reportContentTypeId";
 
   @Inject
-  @Named("workspaceId")
+  @Named(INJECT_NAME_WORKSPACE_ID)
   private WorkspaceId workspaceId;
   @Inject
-  @Named("reportContentTypeId")
+  @Named(INJECT_NAME_REPORT_CONTENT_TYPE_ID)
   private ContentTypeId reportTypeId;
 
   public Collection<Content> search(ReportFilter reportFilter) {
@@ -46,9 +49,7 @@ public class ReportServiceImpl implements ReportService {
       }
     }
     if (StringUtils.isNotBlank(reportFilter.getConfigId())) {
-      String contentId = SmartContentAPI.getInstance().getContentLoader().createContentId(workspaceId,
-                                                                                          org.apache.commons.codec.binary.StringUtils.
-          getBytesUtf8(reportFilter.getConfigId())).toString();
+      String contentId = getContentId(workspaceId, reportFilter.getConfigId()).toString();
       FieldDef reportConfigFieldDef = reportTypeId.getContentType().getFieldDefs().get(Report.PROPERTY_REPORTCONFIG);
       String searchFieldName = SmartContentAPI.getInstance().getContentTypeLoader().getSearchFieldName(
           reportConfigFieldDef);
@@ -59,6 +60,12 @@ public class ReportServiceImpl implements ReportService {
     }
     Collection<Content> contents = SmartContentAPI.getInstance().getContentLoader().search(filter).getResult();
     return contents;
+  }
+
+  public static ContentId getContentId(WorkspaceId workspaceId, String stringId) {
+    return SmartContentAPI.getInstance().getContentLoader().createContentId(workspaceId,
+                                                                            org.apache.commons.codec.binary.StringUtils.
+        getBytesUtf8(stringId));
   }
 
   public Content getReportContent(String id) {

@@ -31,7 +31,6 @@ public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfi
     for (Date date : f.getSchedules()) {
       schedulers.add(date);
     }
-    t.setSchedules(schedulers);
     List<EmailConfig> emailConfigs = new ArrayList<EmailConfig>();
     for (com.smartitengineering.generator.engine.webservice.domain.EmailConfig config : f.getEmailConfig()) {
       EmailConfig emailConfig = new EmailConfig();
@@ -53,9 +52,6 @@ public class ReportConfigAdapterHelper extends AbstractAdapterHelper<ReportConfi
     reportConfig.setName(t.getName());
     reportConfig.setValidTill(t.getValidTill());
     List<Date> schedulers = new ArrayList<Date>();
-    for (Date date : t.getSchedules()) {
-      schedulers.add(date);
-    }
     reportConfig.setSchedules(schedulers);
     List<com.smartitengineering.generator.engine.webservice.domain.EmailConfig> emailConfigs =
                                                                                 new ArrayList<com.smartitengineering.generator.engine.webservice.domain.EmailConfig>();

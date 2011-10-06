@@ -7,22 +7,36 @@ package com.smartitengineering.generator.engine.service.impl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.smartitengineering.cms.api.factory.content.WriteableContent;
+import com.smartitengineering.cms.api.type.ContentType;
+import com.smartitengineering.cms.api.type.ContentTypeId;
 import com.smartitengineering.cms.api.workspace.WorkspaceId;
 import com.smartitengineering.dao.common.CommonReadDao;
 import com.smartitengineering.dao.common.CommonWriteDao;
 import com.smartitengineering.dao.common.queryparam.MatchMode;
 import com.smartitengineering.dao.common.queryparam.QueryParameter;
 import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
+import com.smartitengineering.generator.engine.domain.CodeOnDemand;
+import com.smartitengineering.generator.engine.domain.Map;
 import com.smartitengineering.generator.engine.domain.ReportConfig;
 import com.smartitengineering.generator.engine.domain.ReportEvent;
+import com.smartitengineering.generator.engine.domain.SourceCode;
+import com.smartitengineering.generator.engine.domain.SourceCode.Code;
 import com.smartitengineering.generator.engine.service.ReportConfigFilter;
 import com.smartitengineering.generator.engine.service.ReportConfigService;
+import com.smartitengineering.generator.engine.service.ReportExecutor;
+import com.smartitengineering.generator.engine.service.impl.scripting.GroovyObjectFactory;
+import com.smartitengineering.generator.engine.service.impl.scripting.JRubyObjectFactory;
+import com.smartitengineering.generator.engine.service.impl.scripting.JavascriptObjectFactory;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
@@ -66,6 +80,9 @@ public class ReportConfigServiceImpl implements ReportConfigService {
   @Inject
   @Named(ReportServiceImpl.INJECT_NAME_WORKSPACE_ID)
   private WorkspaceId workspaceId;
+  @Inject
+  @Named(ReportServiceImpl.INJECT_NAME_REPORT_CONTENT_TYPE_ID)
+  private ContentTypeId reportTypeId;
   @Inject
   @Named(INJECT_NAME_EXECUTION_SERVICE)
   private ExecutorService executor;
@@ -200,12 +217,102 @@ public class ReportConfigServiceImpl implements ReportConfigService {
       if (reportEvent == null) {
         throw new IllegalArgumentException("ReportEvent can not be null!");
       }
+      if (reportEvent.getReportConfig() == null) {
+        throw new IllegalStateException("Config for report event is missing!");
+      }
       this.reportEvent = reportEvent;
     }
 
     public void run() {
-      //Implement script execution of report event
+      reportEvent.setEventStatus(ReportEvent.EventStatus.In_Progress);
+      commonEventWriteDao.update(reportEvent);
+      try {
+        final ReportConfig reportConfig = reportEvent.getReportConfig();
+        ReportExecutor executor = getExecutor(reportConfig);
+        final Map params = reportConfig.getParams();
+        if (params != null && params.getEntries() != null) {
+          final java.util.Map<String, String> paramMap = new LinkedHashMap<String, String>(params.getEntries().size());
+          for (Map.Entries entries : params.getEntries()) {
+            paramMap.put(entries.getKey(), entries.getValue());
+          }
+          WriteableContent content = executor.createReport(reportEvent.getDateReportScheduledFor(), paramMap);
+          if (isInstanceOf(content.getContentDefinition(), reportTypeId)) {
+            content.put();
+          }
+          else {
+            throw new IllegalStateException("Content created as REPORT ain't instance of " + reportTypeId);
+          }
+        }
+        reportEvent.setEventStatus(ReportEvent.EventStatus.Finished);
+        commonEventWriteDao.update(reportEvent);
+      }
+      catch (Exception ex) {
+        logger.error("Error while executing report!", ex);
+        reportEvent.setEventStatus(ReportEvent.EventStatus.Error);
+        StringWriter writer = new StringWriter();
+        ex.printStackTrace(new PrintWriter(writer));
+        reportEvent.setAdditionalStatusInfo(writer.toString());
+        commonEventWriteDao.update(reportEvent);
+      }
     }
+  }
+
+  protected ReportExecutor getExecutor(ReportConfig config) {
+    CodeOnDemand demand = config.getCodeOnDemand();
+    if (demand != null) {
+      SourceCode code = demand.getCode();
+      return processSourceCodeToExecutor(code);
+    }
+    else {
+      SourceCode embeddedCode = config.getEmbeddedSourceCode();
+      return processSourceCodeToExecutor(embeddedCode);
+    }
+  }
+
+  protected ReportExecutor processSourceCodeToExecutor(SourceCode sourceCode) throws IllegalArgumentException,
+                                                                                     IllegalStateException {
+    if (sourceCode != null) {
+      try {
+        Code code = sourceCode.getCode();
+        final ReportExecutor reportExecutor;
+        byte[] codeData = org.apache.commons.codec.binary.StringUtils.getBytesUtf8(code.getEmbeddedCode());
+        switch (code.getCodeType()) {
+          case GROOVY:
+            reportExecutor = GroovyObjectFactory.getInstance().getObjectFromScript(codeData, ReportExecutor.class);
+            break;
+          case RUBY:
+            reportExecutor = JRubyObjectFactory.getInstance().getObjectFromScript(codeData, ReportExecutor.class);
+            break;
+          case JAVASCRIPT:
+            reportExecutor = JavascriptObjectFactory.getInstance().getObjectFromScript(codeData, ReportExecutor.class);
+            break;
+          default:
+            reportExecutor = null;
+        }
+        return reportExecutor;
+      }
+      catch (Exception ex) {
+        throw new IllegalStateException("Could not convert script!", ex);
+      }
+    }
+    else {
+      throw new IllegalArgumentException("Source code can not be null!");
+    }
+  }
+
+  protected boolean isInstanceOf(ContentType type, final ContentTypeId typeDef) {
+    boolean isInstanceOf = false;
+    if (type.getContentTypeID().equals(typeDef)) {
+      isInstanceOf = true;
+    }
+    if (!isInstanceOf) {
+      ContentTypeId parentId = type.getParent();
+      final ContentType parentType = parentId.getContentType();
+      if (!isInstanceOf && parentId != null && parentType != null) {
+        isInstanceOf = isInstanceOf(parentType, typeDef);
+      }
+    }
+    return isInstanceOf;
   }
 
   protected void generateReport() {

@@ -7,9 +7,22 @@ package com.smartitengineering.generator.engine.service.impl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.smartitengineering.cms.api.content.ContentId;
+import com.smartitengineering.cms.api.content.FieldValue;
+import com.smartitengineering.cms.api.content.MutableCollectionFieldValue;
+import com.smartitengineering.cms.api.content.MutableCompositeFieldValue;
+import com.smartitengineering.cms.api.content.MutableContentFieldValue;
+import com.smartitengineering.cms.api.content.MutableDateTimeFieldValue;
+import com.smartitengineering.cms.api.content.MutableField;
+import com.smartitengineering.cms.api.content.MutableStringFieldValue;
+import com.smartitengineering.cms.api.factory.SmartContentAPI;
+import com.smartitengineering.cms.api.factory.content.ContentLoader;
 import com.smartitengineering.cms.api.factory.content.WriteableContent;
+import com.smartitengineering.cms.api.type.CollectionDataType;
+import com.smartitengineering.cms.api.type.CompositeDataType;
 import com.smartitengineering.cms.api.type.ContentType;
 import com.smartitengineering.cms.api.type.ContentTypeId;
+import com.smartitengineering.cms.api.type.FieldDef;
 import com.smartitengineering.cms.api.workspace.WorkspaceId;
 import com.smartitengineering.dao.common.CommonReadDao;
 import com.smartitengineering.dao.common.CommonWriteDao;
@@ -18,6 +31,8 @@ import com.smartitengineering.dao.common.queryparam.QueryParameter;
 import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
 import com.smartitengineering.generator.engine.domain.CodeOnDemand;
 import com.smartitengineering.generator.engine.domain.Map;
+import com.smartitengineering.generator.engine.domain.Map.Entries;
+import com.smartitengineering.generator.engine.domain.Report;
 import com.smartitengineering.generator.engine.domain.ReportConfig;
 import com.smartitengineering.generator.engine.domain.ReportEvent;
 import com.smartitengineering.generator.engine.domain.SourceCode;
@@ -235,8 +250,79 @@ public class ReportConfigServiceImpl implements ReportConfigService {
           for (Map.Entries entries : params.getEntries()) {
             paramMap.put(entries.getKey(), entries.getValue());
           }
+          long startDate = System.currentTimeMillis();
           WriteableContent content = executor.createReport(reportEvent.getDateReportScheduledFor(), paramMap);
+          long endDate = System.currentTimeMillis();
           if (isInstanceOf(content.getContentDefinition(), reportTypeId)) {
+            ContentLoader loader = SmartContentAPI.getInstance().getContentLoader();
+            final java.util.Map<String, FieldDef> fieldDefs = reportTypeId.getContentType().getFieldDefs();
+            //Exec start datetime
+            MutableDateTimeFieldValue val = loader.createDateTimeFieldValue();
+            val.setValue(new Date(startDate));
+            FieldDef def = fieldDefs.get(Report.PROPERTY_EXECUTIONSTARTDATE);
+            MutableField field = loader.createMutableField(null, def);
+            field.setValue(val);
+            content.setField(field);
+            //Exec end datetime
+            val = loader.createDateTimeFieldValue();
+            val.setValue(new Date(endDate));
+            def = fieldDefs.get(Report.PROPERTY_EXECUTIONENDDATE);
+            field = loader.createMutableField(null, def);
+            field.setValue(val);
+            content.setField(field);
+            //Trigger datetime
+            val = loader.createDateTimeFieldValue();
+            val.setValue(reportEvent.getDateReportScheduledFor());
+            def = fieldDefs.get(Report.PROPERTY_TRIGGERDATE);
+            field = loader.createMutableField(null, def);
+            field.setValue(val);
+            content.setField(field);
+            //Params
+            Map map = reportConfig.getParams();
+            if (map != null && content.getField(Report.PROPERTY_PARAMS) == null && map.getEntries() != null && !map.
+                getEntries().isEmpty()) {
+              def = fieldDefs.get(Report.PROPERTY_PARAMS);
+              CompositeDataType compositeDataType = ((CompositeDataType) def.getValueDef());
+              FieldDef mapDef = compositeDataType.getComposedFieldDefs().get(Map.PROPERTY_ENTRIES);
+              CompositeDataType entryType = ((CompositeDataType) ((CollectionDataType) mapDef.getValueDef()).
+                                             getItemDataType());
+              final Collection<Entries> entriess = map.getEntries();
+              Collection<FieldValue> vals = new ArrayList<FieldValue>(entriess.size());
+              for (Entries entries : entriess) {
+                MutableStringFieldValue keyVal = loader.createStringFieldValue();
+                keyVal.setValue(entries.getKey());
+                MutableField keyField = loader.createMutableField(null, entryType.getComposedFieldDefs().get(
+                    Map.Entries.PROPERTY_KEY));
+                keyField.setValue(keyVal);
+                MutableStringFieldValue valVal = loader.createStringFieldValue();
+                valVal.setValue(entries.getValue());
+                MutableField valField = loader.createMutableField(null, entryType.getComposedFieldDefs().get(
+                    Map.Entries.PROPERTY_VALUE));
+                valField.setValue(valVal);
+                MutableCompositeFieldValue entryVal = loader.createCompositeFieldValue();
+                entryVal.setField(keyField);
+                entryVal.setField(valField);
+                vals.add(entryVal);
+              }
+              MutableCollectionFieldValue cVal = loader.createCollectionFieldValue();
+              cVal.setValue(vals);
+              MutableCompositeFieldValue compVal = loader.createCompositeFieldValue();
+              MutableField compField = loader.createMutableField(null, mapDef);
+              compField.setValue(cVal);
+              compVal.setField(compField);
+              field = loader.createMutableField(null, def);
+              field.setValue(compVal);
+              content.setField(field);
+            }
+            //Config
+            ContentId configContentId = ReportServiceImpl.getContentId(workspaceId, reportConfig.getId());
+            MutableContentFieldValue cVal = loader.createContentFieldValue();
+            cVal.setValue(configContentId);
+            def = fieldDefs.get(Report.PROPERTY_REPORTCONFIG);
+            field = loader.createMutableField(null, def);
+            field.setValue(cVal);
+            content.setField(field);
+            //Save content
             content.put();
           }
           else {

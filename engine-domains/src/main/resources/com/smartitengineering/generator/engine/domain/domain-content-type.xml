@@ -55,13 +55,13 @@
         </search>
       </field>
       <field>
-        <name>reportConfig</name>
+        <name>reportEvent</name>
         <displayName>Report Configuration Generated From</displayName>
         <value>
           <content>
             <definition>
               <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
-              <typeName>ReportConfig</typeName>
+              <typeName>ReportEvent</typeName>
             </definition>
             <availableForSearch>true</availableForSearch>
           </content>
@@ -145,7 +145,7 @@
         </value>
         <required>true</required>
         <search>
-          <index>false</index>
+          <index>true</index>
           <store>false</store>
         </search>
       </field>
@@ -158,12 +158,12 @@
               <typeNS>com.smartitengineering.generator.engine.domain</typeNS>
               <typeName>ReportConfig</typeName>
             </definition>
-            <availableForSearch>false</availableForSearch>
+            <availableForSearch>true</availableForSearch>
           </content>
         </value>
         <required>true</required>
         <search>
-          <index>false</index>
+          <index>true</index>
           <store>false</store>
         </search>
       </field>

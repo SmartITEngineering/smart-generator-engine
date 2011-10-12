@@ -11,12 +11,15 @@ import com.smartitengineering.cms.api.content.ContentId;
 import com.smartitengineering.cms.api.content.Filter;
 import com.smartitengineering.cms.api.factory.SmartContentAPI;
 import com.smartitengineering.cms.api.factory.content.ContentLoader;
+import com.smartitengineering.cms.api.factory.type.ContentTypeLoader;
+import com.smartitengineering.cms.api.type.ContentDataType;
 import com.smartitengineering.cms.api.type.ContentTypeId;
 import com.smartitengineering.cms.api.type.FieldDef;
 import com.smartitengineering.cms.api.workspace.WorkspaceId;
 import com.smartitengineering.dao.common.queryparam.MatchMode;
 import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
 import com.smartitengineering.generator.engine.domain.Report;
+import com.smartitengineering.generator.engine.domain.ReportEvent;
 import com.smartitengineering.generator.engine.service.ReportFilter;
 import com.smartitengineering.generator.engine.service.ReportService;
 import java.util.Collection;
@@ -27,10 +30,9 @@ import org.apache.commons.lang.StringUtils;
  * @author imyousuf
  */
 public class ReportServiceImpl implements ReportService {
-  
+
   public static final String INJECT_NAME_WORKSPACE_ID = "workspaceId";
   public static final String INJECT_NAME_REPORT_CONTENT_TYPE_ID = "reportContentTypeId";
-
   @Inject
   @Named(INJECT_NAME_WORKSPACE_ID)
   private WorkspaceId workspaceId;
@@ -50,9 +52,13 @@ public class ReportServiceImpl implements ReportService {
     }
     if (StringUtils.isNotBlank(reportFilter.getConfigId())) {
       String contentId = getContentId(workspaceId, reportFilter.getConfigId()).toString();
-      FieldDef reportConfigFieldDef = reportTypeId.getContentType().getFieldDefs().get(Report.PROPERTY_REPORTCONFIG);
-      String searchFieldName = SmartContentAPI.getInstance().getContentTypeLoader().getSearchFieldName(
-          reportConfigFieldDef);
+      FieldDef reportEventFieldDef = reportTypeId.getContentType().getFieldDefs().get(Report.PROPERTY_REPORTEVENT);
+      final ContentTypeLoader contentTypeLoader = SmartContentAPI.getInstance().getContentTypeLoader();
+      String searchFieldName = contentTypeLoader.getSearchFieldNameWithoutTypeSpecifics(reportEventFieldDef);
+      FieldDef reportConfigFieldDef = ((ContentDataType) reportEventFieldDef.getValueDef()).getTypeDef().getContentType().
+          getFieldDefs().get(ReportEvent.PROPERTY_REPORTCONFIG);
+      searchFieldName = new StringBuilder(searchFieldName).append('_').append(contentTypeLoader.getSearchFieldName(
+          reportConfigFieldDef)).toString();
       if (StringUtils.isNotBlank(searchFieldName) && StringUtils.isNotBlank(contentId)) {
         filter.addFieldFilter(QueryParameterFactory.getStringLikePropertyParam(searchFieldName, contentId,
                                                                                MatchMode.EXACT));

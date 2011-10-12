@@ -315,10 +315,10 @@ public class ReportConfigServiceImpl implements ReportConfigService {
               content.setField(field);
             }
             //Config
-            ContentId configContentId = ReportServiceImpl.getContentId(workspaceId, reportConfig.getId());
+            ContentId eventContentId = ReportServiceImpl.getContentId(workspaceId, reportEvent.getId());
             MutableContentFieldValue cVal = loader.createContentFieldValue();
-            cVal.setValue(configContentId);
-            def = fieldDefs.get(Report.PROPERTY_REPORTCONFIG);
+            cVal.setValue(eventContentId);
+            def = fieldDefs.get(Report.PROPERTY_REPORTEVENT);
             field = loader.createMutableField(null, def);
             field.setValue(cVal);
             content.setField(field);

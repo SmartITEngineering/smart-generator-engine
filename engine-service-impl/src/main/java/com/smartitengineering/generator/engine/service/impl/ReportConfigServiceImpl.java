@@ -133,6 +133,17 @@ public class ReportConfigServiceImpl implements ReportConfigService {
     commonWriteDao.update(reportConfig);
   }
 
+  @Override
+  public void scheduleReport(ReportConfig config, Date schedule) {
+    if (config == null) {
+      return;
+    }
+    if (schedule == null) {
+      schedule = new Date();
+    }
+    createReportEvent(schedule, config);
+  }
+
   @Inject
   public void initCrons() {
     logger.info("Initialize cron jobs");
@@ -343,6 +354,15 @@ public class ReportConfigServiceImpl implements ReportConfigService {
     }
   }
 
+  protected ReportEvent createReportEvent(Date schedule, ReportConfig config) {
+    ReportEvent event = new ReportEvent();
+    event.setDateReportScheduledFor(schedule);
+    event.setEventStatus(ReportEvent.EventStatus.Pending);
+    event.setReportConfig(config);
+    commonEventWriteDao.save(event);
+    return event;
+  }
+
   protected ReportExecutor getExecutor(ReportConfig config) {
     CodeOnDemand demand = config.getCodeOnDemand();
     if (demand != null) {
@@ -467,11 +487,7 @@ public class ReportConfigServiceImpl implements ReportConfigService {
           if (schedules != null && !schedules.isEmpty()) {
             //Create the new events
             for (Date schedule : schedules) {
-              ReportEvent event = new ReportEvent();
-              event.setDateReportScheduledFor(schedule);
-              event.setEventStatus(ReportEvent.EventStatus.Pending);
-              event.setReportConfig(config);
-              commonEventWriteDao.save(event);
+              createReportEvent(schedule, config);
             }
             config.setEventsCreated(true);
             config.setValidTill(schedules.get(schedules.size() - 1));

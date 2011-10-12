@@ -17,6 +17,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -33,6 +34,8 @@ import javax.ws.rs.core.UriBuilderException;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  *
@@ -40,6 +43,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ReportConfigResource extends AbstractResource {
 
+  public static final String PATH_NEW_REPORT = "new-report";
   @PathParam("id")
   private String id;
   @Context
@@ -91,6 +95,9 @@ public class ReportConfigResource extends AbstractResource {
     editLink.setMimeType(MediaType.APPLICATION_JSON);
     configFeed.addLink(editLink);
 
+    configFeed.addLink(getLink(getRelativeURIBuilder().path(getUriInfo().getPath()).path(PATH_NEW_REPORT).build(id),
+                               PATH_NEW_REPORT, MediaType.APPLICATION_FORM_URLENCODED));
+
     // add a alternate link
     Link altLink = getAbderaFactory().newLink();
     altLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).path(CONFIG_CONTENT).build(persistentReportConfig.
@@ -116,6 +123,33 @@ public class ReportConfigResource extends AbstractResource {
   @Produces(MediaType.TEXT_HTML)
   public Response getHtml() {
     ResponseBuilder responseBuilder = Response.status(Status.OK);
+    return responseBuilder.build();
+  }
+
+  @POST
+  @Path(PATH_NEW_REPORT)
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public Response scheduleReport(@FormParam("schedule") String schedule) {
+    Date scheduleDate = null;
+    ResponseBuilder responseBuilder = null;
+    if (StringUtils.isNotBlank(schedule)) {
+      try {
+        scheduleDate = DateUtils.parseDate(schedule, new String[]{DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.
+              getPattern()});
+      }
+      catch (Exception ex) {
+        responseBuilder = Response.status(Status.BAD_REQUEST);
+      }
+    }
+    if (responseBuilder == null) {
+      try {
+        Services.getInstance().getReportConfigService().scheduleReport(persistentReportConfig, scheduleDate);
+        responseBuilder = Response.status(Status.OK);
+      }
+      catch (Exception ex) {
+        responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR);
+      }
+    }
     return responseBuilder.build();
   }
 

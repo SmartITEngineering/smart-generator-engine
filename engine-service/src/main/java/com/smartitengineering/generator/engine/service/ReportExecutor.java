@@ -5,6 +5,7 @@
 package com.smartitengineering.generator.engine.service;
 
 import com.smartitengineering.cms.api.factory.content.WriteableContent;
+import com.smartitengineering.cms.api.workspace.WorkspaceId;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,5 +22,5 @@ public interface ReportExecutor {
    * @param dateReportScheduledFor The date this report execution was scheduled for.
    * @return A CMS Content which is of a type that is instance of Report configured by this engine
    */
-  public WriteableContent createReport(Date dateReportScheduledFor, Map<String, String> params);
+  public WriteableContent createReport(WorkspaceId workspaceId, Date dateReportScheduledFor, Map<String, String> params);
 }

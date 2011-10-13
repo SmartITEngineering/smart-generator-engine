@@ -262,7 +262,8 @@ public class ReportConfigServiceImpl implements ReportConfigService {
             paramMap.put(entries.getKey(), entries.getValue());
           }
           long startDate = System.currentTimeMillis();
-          WriteableContent content = executor.createReport(reportEvent.getDateReportScheduledFor(), paramMap);
+          WriteableContent content = executor.createReport(workspaceId, reportEvent.getDateReportScheduledFor(),
+                                                           paramMap);
           long endDate = System.currentTimeMillis();
           if (isInstanceOf(content.getContentDefinition(), reportTypeId)) {
             ContentLoader loader = SmartContentAPI.getInstance().getContentLoader();

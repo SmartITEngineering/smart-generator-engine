@@ -7,12 +7,9 @@ package com.smartitengineering.generator.engine.service.impl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import com.smartitengineering.cms.api.content.ContentId;
 import com.smartitengineering.cms.api.content.FieldValue;
 import com.smartitengineering.cms.api.content.MutableCollectionFieldValue;
 import com.smartitengineering.cms.api.content.MutableCompositeFieldValue;
-import com.smartitengineering.cms.api.content.MutableContentFieldValue;
-import com.smartitengineering.cms.api.content.MutableDateTimeFieldValue;
 import com.smartitengineering.cms.api.content.MutableField;
 import com.smartitengineering.cms.api.content.MutableStringFieldValue;
 import com.smartitengineering.cms.api.factory.SmartContentAPI;
@@ -40,6 +37,7 @@ import com.smartitengineering.generator.engine.domain.SourceCode.Code;
 import com.smartitengineering.generator.engine.service.ReportConfigFilter;
 import com.smartitengineering.generator.engine.service.ReportConfigService;
 import com.smartitengineering.generator.engine.service.ReportExecutor;
+import com.smartitengineering.generator.engine.service.factory.ContentUtils;
 import com.smartitengineering.generator.engine.service.impl.scripting.GroovyObjectFactory;
 import com.smartitengineering.generator.engine.service.impl.scripting.JRubyObjectFactory;
 import com.smartitengineering.generator.engine.service.impl.scripting.JavascriptObjectFactory;
@@ -50,6 +48,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -269,31 +268,17 @@ public class ReportConfigServiceImpl implements ReportConfigService {
             ContentLoader loader = SmartContentAPI.getInstance().getContentLoader();
             final java.util.Map<String, FieldDef> fieldDefs = reportTypeId.getContentType().getFieldDefs();
             //Exec start datetime
-            MutableDateTimeFieldValue val = loader.createDateTimeFieldValue();
-            val.setValue(new Date(startDate));
-            FieldDef def = fieldDefs.get(Report.PROPERTY_EXECUTIONSTARTDATE);
-            MutableField field = loader.createMutableField(null, def);
-            field.setValue(val);
-            content.setField(field);
+            content.setField(
+                ContentUtils.getField(Report.PROPERTY_EXECUTIONSTARTDATE, reportTypeId, new Date(startDate)));
             //Exec end datetime
-            val = loader.createDateTimeFieldValue();
-            val.setValue(new Date(endDate));
-            def = fieldDefs.get(Report.PROPERTY_EXECUTIONENDDATE);
-            field = loader.createMutableField(null, def);
-            field.setValue(val);
-            content.setField(field);
+            content.setField(ContentUtils.getField(Report.PROPERTY_EXECUTIONENDDATE, reportTypeId, new Date(endDate)));
             //Trigger datetime
-            val = loader.createDateTimeFieldValue();
-            val.setValue(reportEvent.getDateReportScheduledFor());
-            def = fieldDefs.get(Report.PROPERTY_TRIGGERDATE);
-            field = loader.createMutableField(null, def);
-            field.setValue(val);
-            content.setField(field);
+            ContentUtils.getField(Report.PROPERTY_TRIGGERDATE, reportTypeId, reportEvent.getDateReportScheduledFor());
             //Params
             Map map = reportConfig.getParams();
             if (map != null && content.getField(Report.PROPERTY_PARAMS) == null && map.getEntries() != null && !map.
                 getEntries().isEmpty()) {
-              def = fieldDefs.get(Report.PROPERTY_PARAMS);
+              FieldDef def = fieldDefs.get(Report.PROPERTY_PARAMS);
               CompositeDataType compositeDataType = ((CompositeDataType) def.getValueDef());
               FieldDef mapDef = compositeDataType.getComposedFieldDefs().get(Map.PROPERTY_ENTRIES);
               CompositeDataType entryType = ((CompositeDataType) ((CollectionDataType) mapDef.getValueDef()).
@@ -318,22 +303,14 @@ public class ReportConfigServiceImpl implements ReportConfigService {
               }
               MutableCollectionFieldValue cVal = loader.createCollectionFieldValue();
               cVal.setValue(vals);
-              MutableCompositeFieldValue compVal = loader.createCompositeFieldValue();
               MutableField compField = loader.createMutableField(null, mapDef);
               compField.setValue(cVal);
-              compVal.setField(compField);
-              field = loader.createMutableField(null, def);
-              field.setValue(compVal);
-              content.setField(field);
+              content.setField(ContentUtils.getField(Report.PROPERTY_PARAMS, reportTypeId, Collections.singleton(
+                  compField)));
             }
             //Config
-            ContentId eventContentId = ReportServiceImpl.getContentId(workspaceId, reportEvent.getId());
-            MutableContentFieldValue cVal = loader.createContentFieldValue();
-            cVal.setValue(eventContentId);
-            def = fieldDefs.get(Report.PROPERTY_REPORTEVENT);
-            field = loader.createMutableField(null, def);
-            field.setValue(cVal);
-            content.setField(field);
+            content.setField(ContentUtils.getField(Report.PROPERTY_REPORTEVENT, reportTypeId, ReportServiceImpl.
+                getContentId(workspaceId, reportEvent.getId())));
             //Save content
             content.put();
           }

@@ -28,6 +28,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,9 +37,11 @@ import org.apache.abdera.model.Link;
  */
 public class ReportConfigsResource extends AbstractResource {
 
+  public static final String CONFIG = "id/{id}";
   @Context
   private HttpServletRequest servletRequest;
   private GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig> adapter;
+  protected transient Logger logger = LoggerFactory.getLogger(getClass());
 
   public ReportConfigsResource() {
     adapter = new GenericAdapterImpl<ReportConfig, com.smartitengineering.generator.engine.domain.ReportConfig>();
@@ -62,8 +66,8 @@ public class ReportConfigsResource extends AbstractResource {
         reportConfigEntry.setTitle(reportConfig.getName());
 
         Link reportConfigLink = getAbderaFactory().newLink();
-        reportConfigLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).build(reportConfig.getId()).
-            toString());
+        reportConfigLink.setHref(getRelativeURIBuilder().path(RootResource.CONFIGS).path(CONFIG).build(reportConfig.
+            getId()).toString());
         reportConfigLink.setRel(Link.REL_ALTERNATE);
         reportConfigLink.setMimeType(MediaType.APPLICATION_ATOM_XML);
 
@@ -77,18 +81,23 @@ public class ReportConfigsResource extends AbstractResource {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response post(ReportConfig reportConfig) {
-    ResponseBuilder responseBuilder = Response.status(Status.CREATED);
+    ResponseBuilder responseBuilder;
     com.smartitengineering.generator.engine.domain.ReportConfig persistentReportConfig = adapter.convert(reportConfig);
     try {
       basicPost(persistentReportConfig);
+      responseBuilder = Response.status(Status.CREATED);
+      responseBuilder.location(getAbsoluteURIBuilder().path(RootResource.CONFIGS).path(CONFIG).build(persistentReportConfig.
+          getId()));
     }
     catch (Exception ex) {
       servletRequest.setAttribute("error", ex.getMessage());
+      responseBuilder = Response.status(Status.BAD_REQUEST);
+      logger.warn("Consuming exception!", ex);
     }
     return responseBuilder.build();
   }
 
-  @Path("id/{id}")
+  @Path(CONFIG)
   public ReportConfigResource getReportConfig() {
     return getResourceContext().getResource(ReportConfigResource.class);
   }

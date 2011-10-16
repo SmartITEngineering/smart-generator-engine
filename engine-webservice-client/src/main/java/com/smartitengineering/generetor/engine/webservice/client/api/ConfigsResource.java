@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 public interface ConfigsResource extends WritableResource<Feed> {
 
-  public ConfigsResource createConfig(ReportConfig reportConfig);
+  public ConfigResource createConfig(ReportConfig reportConfig);
 
   public Collection<ConfigResource> searchConfig();
 }

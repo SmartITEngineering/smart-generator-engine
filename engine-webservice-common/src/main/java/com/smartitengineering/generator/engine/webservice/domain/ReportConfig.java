@@ -6,9 +6,7 @@ package com.smartitengineering.generator.engine.webservice.domain;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Date;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import java.util.Map;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -20,17 +18,15 @@ public class ReportConfig {
 
   private String id;
   private String name;
-  private Date validTill;
   private String cronExpression;
-  private List<Date> schedules;
   private List<EmailConfig> emailConfig;
+  private Map<String, String> params;
+  private SourceCode code;
 
-  @JsonIgnore
   public String getCronExpression() {
     return cronExpression;
   }
 
-  @JsonProperty
   public void setCronExpression(String cronExpression) {
     this.cronExpression = cronExpression;
   }
@@ -62,24 +58,19 @@ public class ReportConfig {
     this.name = name;
   }
 
-  @JsonProperty
-  public List<Date> getSchedules() {
-    if (schedules == null) {
-      return Collections.emptyList();
-    }
-    return schedules;
+  public Map<String, String> getParams() {
+    return params;
   }
 
-  @JsonIgnore
-  public void setSchedules(List<Date> schedules) {
-    this.schedules = schedules;
+  public void setParams(Map<String, String> params) {
+    this.params = params;
   }
 
-  public Date getValidTill() {
-    return validTill;
+  public SourceCode getCode() {
+    return code;
   }
 
-  public void setValidTill(Date validTill) {
-    this.validTill = validTill;
+  public void setCode(SourceCode code) {
+    this.code = code;
   }
 }

@@ -39,14 +39,14 @@ public class ConfigsResourceImpl extends AbstractFeedClientResource<Resource<? e
   }
 
   @Override
-  public ConfigsResource createConfig(ReportConfig reportConfig) {
+  public ConfigResource createConfig(ReportConfig reportConfig) {
     ClientResponse response = post(MediaType.APPLICATION_JSON, reportConfig, ClientResponse.Status.CREATED);
     if (response.getLocation() == null) {
       logger.info("response.getLocation is null for reportconfig resource");
     }
     final ResourceLink configLink = ClientUtil.createResourceLink("config", response.getLocation(),
                                                                   MediaType.APPLICATION_ATOM_XML);
-    return new ConfigsResourceImpl(this, configLink);
+    return new ConfigResourceImpl(this, configLink);
   }
 
   @Override

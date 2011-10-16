@@ -100,8 +100,8 @@ public class ReportConfigResource extends AbstractResource {
 
     // add a alternate link
     Link altLink = getAbderaFactory().newLink();
-    altLink.setHref(getRelativeURIBuilder().path(ReportConfigResource.class).path(CONFIG_CONTENT).build(persistentReportConfig.
-        getId()).toASCIIString());
+    altLink.setHref(getRelativeURIBuilder().path(RootResource.CONFIGS).path(ReportConfigsResource.CONFIG).path(
+        CONFIG_CONTENT).build(persistentReportConfig.getId()).toASCIIString());
     altLink.setRel(Link.REL_ALTERNATE);
     altLink.setMimeType(MediaType.APPLICATION_JSON);
     configFeed.addLink(altLink);

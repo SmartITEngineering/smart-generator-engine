@@ -7,6 +7,10 @@ package com.smartitengineering.generetor.engine.webservice.client;
 import com.google.inject.AbstractModule;
 import com.smartitengineering.cms.api.common.MediaType;
 import com.smartitengineering.generator.engine.webservice.domain.ReportConfig;
+import com.smartitengineering.generator.engine.webservice.domain.SourceCode;
+import com.smartitengineering.generator.engine.webservice.domain.SourceCodeType;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigResource;
+import com.smartitengineering.generetor.engine.webservice.client.api.ConfigsResource;
 import com.smartitengineering.generetor.engine.webservice.client.api.Impl.RootResourceImpl;
 import com.smartitengineering.generetor.engine.webservice.client.api.RootResource;
 import com.smartitengineering.util.bean.guice.GuiceUtil;
@@ -121,9 +125,18 @@ public class ResourceTest {
 
   @Test
   public void testReportConfig() {
-    ReportConfig reportConfig1 = new ReportConfig();
-    reportConfig1.setId("test1");
-    reportConfig1.setName("TestConfig");
+    ReportConfig reportConfig = new ReportConfig();
+    reportConfig.setId("id");
+    reportConfig.setName("testName");
+    reportConfig.setCronExpression("10 1 0 ? * *");
+    SourceCode code = new SourceCode();
+    code.setCodeType(SourceCodeType.GROOVY);
+    code.setCode("SomeCode");
+    reportConfig.setCode(code);
+    ConfigResource result = RootResourceImpl.getRoot(ROOT_URI).getConfigsResource().createConfig(reportConfig);
+    ReportConfig storedConfig = result.getConfig();
+    Assert.assertEquals("SomeCode", storedConfig.getCode().getCode());
+    Assert.assertEquals(SourceCodeType.GROOVY, storedConfig.getCode().getCodeType());
     sleep();
   }
 

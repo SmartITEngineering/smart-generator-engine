@@ -116,6 +116,18 @@ public class ReportConfigServiceImpl implements ReportConfigService {
 
   @Override
   public void save(ReportConfig reportConfig) {
+    if (reportConfig.getEmbeddedSourceCode() == null && reportConfig.getCodeOnDemand() == null) {
+      throw new IllegalArgumentException("No code specified!");
+    }
+    if (reportConfig.getEmbeddedSourceCode() != null && (reportConfig.getEmbeddedSourceCode().getCode() == null ||
+                                                         StringUtils.isBlank(reportConfig.getEmbeddedSourceCode().
+                                                         getCode().getEmbeddedCode()) || reportConfig.
+                                                         getEmbeddedSourceCode().getCode().getCodeType() == null)) {
+      throw new IllegalArgumentException("Embedded source code not specified properly!");
+    }
+    if (getSchedules(reportConfig, null) == null) {
+      throw new IllegalArgumentException("No schedules from report!");
+    }
     resetScheduleGeneration(reportConfig);
     commonWriteDao.save(reportConfig);
   }
@@ -152,8 +164,8 @@ public class ReportConfigServiceImpl implements ReportConfigService {
       Trigger trigger = new DateIntervalTrigger("reportSyncTrigger", "reportSyncPoll",
                                                 DateIntervalTrigger.IntervalUnit.MINUTE,
                                                 5);
-      JobDetail redetail = new JobDetail("reportJob", "reportPoll", EventReSyncJob.class);
-      Trigger retrigger = new DateIntervalTrigger("reportTrigger", "reportPoll",
+      JobDetail redetail = new JobDetail("reportReSyncJob", "reportReSyncPoll", EventReSyncJob.class);
+      Trigger retrigger = new DateIntervalTrigger("reportReSyncTrigger", "reportReSyncPoll",
                                                   DateIntervalTrigger.IntervalUnit.DAY, 1);
       JobDetail reportDetail = new JobDetail("reportJob", "reportPoll", ReportJob.class);
       Trigger reportTrigger = new DateIntervalTrigger("reportTrigger", "reportPoll",

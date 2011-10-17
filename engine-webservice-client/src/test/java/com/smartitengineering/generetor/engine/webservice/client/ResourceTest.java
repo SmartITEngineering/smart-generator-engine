@@ -131,13 +131,27 @@ public class ResourceTest {
     reportConfig.setCronExpression("10 1 0 ? * *");
     SourceCode code = new SourceCode();
     code.setCodeType(SourceCodeType.GROOVY);
-    code.setCode("SomeCode");
+    final String someCode = "SomeCode";
+    code.setCode(someCode);
     reportConfig.setCode(code);
-    ConfigResource result = RootResourceImpl.getRoot(ROOT_URI).getConfigsResource().createConfig(reportConfig);
-    ReportConfig storedConfig = result.getConfig();
-    Assert.assertEquals("SomeCode", storedConfig.getCode().getCode());
-    Assert.assertEquals(SourceCodeType.GROOVY, storedConfig.getCode().getCodeType());
+    createConfig(reportConfig, someCode);
+    reportConfig.setId("id2");
+    createConfig(reportConfig, someCode);
     sleep();
+  }
+
+  protected void createConfig(ReportConfig reportConfig, String code) {
+    ConfigsResource configsResource = RootResourceImpl.getRoot(ROOT_URI).getConfigsResource();
+    long start = System.currentTimeMillis();
+    ConfigResource result = configsResource.createConfig(reportConfig);
+    long wend = System.currentTimeMillis();
+    ReportConfig storedConfig = result.getConfig();
+    long rend = System.currentTimeMillis();
+    Assert.assertEquals(code, storedConfig.getCode().getCode());
+    Assert.assertEquals(SourceCodeType.GROOVY, storedConfig.getCode().getCodeType());
+    LOGGER.warn("Duration for writing and reading a config " + (rend - start));
+    LOGGER.warn("Duration for writing a config " + (wend - start));
+    LOGGER.warn("Duration for reading a config " + (rend - wend));
   }
 
   private static void sleep() {

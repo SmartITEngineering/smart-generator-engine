@@ -74,11 +74,17 @@ public final class ContentUtils {
         get(fieldName) == null) {
       return null;
     }
-    ContentLoader loader = SmartContentAPI.getInstance().getContentLoader();
     FieldDef def = ctype.getFieldDefs().get(fieldName);
+    if (def == null) {
+      return null;
+    }
+    return getField(def, val);
+  }
+
+  public static MutableField getField(FieldDef def, Object val) {
     final MutableFieldValue fieldValue = getFieldValue(def.getValueDef().getType(), val);
     fieldValue.setValue(val);
-    MutableField field = loader.createMutableField(null, def);
+    MutableField field = SmartContentAPI.getInstance().getContentLoader().createMutableField(null, def);
     field.setValue(fieldValue);
     return field;
   }

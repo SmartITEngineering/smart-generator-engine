@@ -38,16 +38,16 @@ public class RootResourceImpl extends AbstractFeedClientResource<Resource<? exte
   private static final int PORT = 10080;
   public static final String REL_CONFIGS = "reportconfigs";
   public static final String REL_REPORTS = "reports";
-  private static final ConnectionConfig SMART_CMS_CONNECTION_CONFIG;
+  private static final ConnectionConfig GENERATOR_ENGINE_CONNECTION_CONFIG;
   private static final boolean CONNECTION_CONFIGURED;
-  private static final URI SMART_CMS_BASE_URI;
+  private static final URI GENERATOR_ENGINE_BASE_URI;
   private static final ConfigProcessor CONFIG_PROCESSOR = new EngineClientConfigProcessor();
 
   static {
     if (LOGGER.isInfoEnabled()) {
       System.setProperty("com.smartitengineering.util.rest.client.ApplicationWideClientFactoryImpl.trace", "true");
     }
-    SMART_CMS_CONNECTION_CONFIG = new ConnectionConfig();
+    GENERATOR_ENGINE_CONNECTION_CONFIG = new ConnectionConfig();
     String propFileName = "smart-generator-engine-client-config.properties";
     PropertiesLocator locator = new PropertiesLocator();
     locator.setSmartLocations(propFileName);
@@ -60,27 +60,27 @@ public class RootResourceImpl extends AbstractFeedClientResource<Resource<? exte
     }
     if (!properties.isEmpty()) {
       CONNECTION_CONFIGURED = true;
-      SMART_CMS_CONNECTION_CONFIG.setBasicUri(properties.getProperty("baseUri", ""));
-      SMART_CMS_CONNECTION_CONFIG.setContextPath(properties.getProperty("contextPath", "/"));
-      SMART_CMS_CONNECTION_CONFIG.setHost(properties.getProperty("host", "localhost"));
-      SMART_CMS_CONNECTION_CONFIG.setPort(NumberUtils.toInt(properties.getProperty("port", ""), PORT));
-      SMART_CMS_BASE_URI = UriBuilder.fromUri(SMART_CMS_CONNECTION_CONFIG.getContextPath()).path(SMART_CMS_CONNECTION_CONFIG.
-          getBasicUri()).host(SMART_CMS_CONNECTION_CONFIG.getHost()).port(SMART_CMS_CONNECTION_CONFIG.getPort()).
-          scheme("http").build();
+      GENERATOR_ENGINE_CONNECTION_CONFIG.setBasicUri(properties.getProperty("baseUri", ""));
+      GENERATOR_ENGINE_CONNECTION_CONFIG.setContextPath(properties.getProperty("contextPath", "/"));
+      GENERATOR_ENGINE_CONNECTION_CONFIG.setHost(properties.getProperty("host", "localhost"));
+      GENERATOR_ENGINE_CONNECTION_CONFIG.setPort(NumberUtils.toInt(properties.getProperty("port", ""), PORT));
+      GENERATOR_ENGINE_BASE_URI = UriBuilder.fromUri(GENERATOR_ENGINE_CONNECTION_CONFIG.getContextPath()).path(GENERATOR_ENGINE_CONNECTION_CONFIG.
+          getBasicUri()).host(GENERATOR_ENGINE_CONNECTION_CONFIG.getHost()).port(GENERATOR_ENGINE_CONNECTION_CONFIG.
+          getPort()).scheme("http").build();
     }
     else {
       CONNECTION_CONFIGURED = false;
-      SMART_CMS_BASE_URI = null;
+      GENERATOR_ENGINE_BASE_URI = null;
     }
   }
 
   private RootResourceImpl(URI uri) throws IllegalArgumentException,
                                            UniformInterfaceException {
-    super(null, CONNECTION_CONFIGURED && uri == null ? SMART_CMS_BASE_URI : uri, false,
-          CONNECTION_CONFIGURED ? ApplicationWideClientFactoryImpl.getClientFactory(SMART_CMS_CONNECTION_CONFIG,
+    super(null, CONNECTION_CONFIGURED && uri == null ? GENERATOR_ENGINE_BASE_URI : uri, false,
+          CONNECTION_CONFIGURED ? ApplicationWideClientFactoryImpl.getClientFactory(GENERATOR_ENGINE_CONNECTION_CONFIG,
                                                                                     CONFIG_PROCESSOR) : null);
     if (logger.isDebugEnabled()) {
-      logger.debug("Root resource URI for Smart CMS " + uri);
+      logger.debug("Root resource URI for Smart Generator Engine " + uri);
     }
   }
 

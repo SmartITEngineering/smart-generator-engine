@@ -89,6 +89,52 @@
             </includes>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>com.smartitengineering.smart-cms</groupId>
+          <artifactId>cms-tools-plugin</artifactId>
+          <version>${smart.cms.version}</version>
+          <inherited>true</inherited>
+          <configuration>
+            <outputDirectory>${project.build.directory}/cms-tools/</outputDirectory>
+            <solrHomeDirectory>../solr/sample-conf/</solrHomeDirectory>
+            <solrArtifact>
+              <groupId>org.apache.solr</groupId>
+              <artifactId>solr</artifactId>
+              <version>${solr.version}</version>
+            </solrArtifact>
+            <eventHubArtifact>
+              <groupId>com.smartitengineering.event</groupId>
+              <artifactId>hub-hbase</artifactId>
+              <version>${hub.version}</version>
+            </eventHubArtifact>
+            <cmsWebServiceArtifact>
+              <groupId>com.smartitengineering.smart-cms</groupId>
+              <artifactId>webservice</artifactId>
+              <version>${smart.cms.version}</version>
+            </cmsWebServiceArtifact>
+          </configuration>
+          <executions>
+            <execution>
+              <id>start-cms-tool-suite</id>
+              <phase>${smart.cms.tools.start.phase}</phase>
+              <inherited>true</inherited>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <daemonMode>true</daemonMode>
+              </configuration>
+            </execution>
+            <execution>
+              <id>stop-cms-tool-suite</id>
+              <inherited>true</inherited>
+              <phase>${smart.cms.tools.stop.phase}</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -132,6 +178,7 @@
     <module>engine-webservice-client</module>
   </modules>
   <properties>
-    <hub.version>0.1-rdbms-SNAPSHOT</hub.version>
+    <smart.cms.tools.start.phase>test-compile</smart.cms.tools.start.phase>
+    <smart.cms.tools.stop.phase>package</smart.cms.tools.stop.phase>
   </properties>
 </project>

@@ -23,8 +23,6 @@ import java.net.URI;
 import java.util.Properties;
 import javax.ws.rs.core.HttpHeaders;
 import junit.framework.Assert;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -45,21 +43,15 @@ public class ResourceTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTest.class);
   private static final String CONTEXT_PATH = "/generator-engine";
   private static final String HOST = "localhost";
-  private static final int PORT = 10080;
+  private static final int PORT = 20080;
   private static final int SLEEP_DURATION = 3000;
-  private static final HBaseTestingUtility TEST_UTIL = new HBaseTestingUtility();
   private static final URI ROOT_URI = URI.create("http://" + HOST + ":" + PORT + CONTEXT_PATH);
 
   @BeforeClass
   public static void setUp() throws Exception {
-    System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-                       "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
-
-    TEST_UTIL.startMiniCluster();
-
     Properties properties = new Properties();
     properties.setProperty(GuiceUtil.CONTEXT_NAME_PROP,
-                           "com.smartitengineering.dao.impl.hbase,com.smartitengineering.user.client");
+                           "com.smartitengineering.user.client");
     properties.setProperty(GuiceUtil.IGNORE_MISSING_DEP_PROP, Boolean.TRUE.toString());
     properties.setProperty(GuiceUtil.MODULES_LIST_PROP, ConfigurationModule.class.getName());
     GuiceUtil.getInstance(properties).register();
@@ -90,7 +82,7 @@ public class ResourceTest {
     System.setProperty(ApplicationWideClientFactoryImpl.TRACE, "true");
 
     Client client = CacheableClient.create();
-    client.resource("http://localhost:9090/api/channels/test").header(HttpHeaders.CONTENT_TYPE,
+    client.resource("http://localhost:10080/hub/api/channels/test").header(HttpHeaders.CONTENT_TYPE,
                                                                       MediaType.APPLICATION_JSON).put(
         "{\"name\":\"test\"}");
     LOGGER.info("Created test channel!");
@@ -100,7 +92,6 @@ public class ResourceTest {
 
     @Override
     protected void configure() {
-      bind(Configuration.class).toInstance(TEST_UTIL.getConfiguration());
       ConnectionConfig config = new ConnectionConfig();
       config.setBasicUri("");
       config.setContextPath(CONTEXT_PATH);
@@ -112,7 +103,6 @@ public class ResourceTest {
 
   @AfterClass
   public static void tearDown() throws Exception {
-    TEST_UTIL.shutdownMiniCluster();
     jettyServer.stop();
   }
 

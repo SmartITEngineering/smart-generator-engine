@@ -49,12 +49,6 @@ public class ResourceTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    Properties properties = new Properties();
-    properties.setProperty(GuiceUtil.CONTEXT_NAME_PROP,
-                           "com.smartitengineering.user.client");
-    properties.setProperty(GuiceUtil.IGNORE_MISSING_DEP_PROP, Boolean.TRUE.toString());
-    properties.setProperty(GuiceUtil.MODULES_LIST_PROP, ConfigurationModule.class.getName());
-    GuiceUtil.getInstance(properties).register();
     /*
      * Start web application container
      */
@@ -63,9 +57,6 @@ public class ResourceTest {
     /*
      * The following is for solr for later, when this is to be used it
      */
-    System.setProperty("solr.solr.home", "./target/sample-conf/");
-    Handler solr = new WebAppContext("./target/solr/", "/solr");
-    handlerList.addHandler(solr);
     final String webapp = "../engine-webservice/src/main/webapp/";
     if (!new File(webapp).exists()) {
       throw new IllegalStateException("WebApp file/dir does not exist!");
@@ -86,19 +77,6 @@ public class ResourceTest {
                                                                       MediaType.APPLICATION_JSON).put(
         "{\"name\":\"test\"}");
     LOGGER.info("Created test channel!");
-  }
-
-  public static class ConfigurationModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-      ConnectionConfig config = new ConnectionConfig();
-      config.setBasicUri("");
-      config.setContextPath(CONTEXT_PATH);
-      config.setHost(HOST);
-      config.setPort(PORT);
-      bind(ConnectionConfig.class).toInstance(config);
-    }
   }
 
   @AfterClass

@@ -9,6 +9,7 @@ import com.smartitengineering.generator.engine.service.ReportService;
 import com.smartitengineering.util.bean.BeanFactoryRegistrar;
 import com.smartitengineering.util.bean.annotations.Aggregator;
 import com.smartitengineering.util.bean.annotations.InjectableField;
+import java.util.concurrent.Semaphore;
 
 /**
  *
@@ -18,6 +19,7 @@ import com.smartitengineering.util.bean.annotations.InjectableField;
 public class Services {
 
   public static final String CONTEXT_NAME = "com.smartitengineering.generator.engine.service";
+  private static final Semaphore semaphore = new Semaphore(1);
   @InjectableField
   private ReportConfigService reportConfigService;
   @InjectableField
@@ -45,7 +47,18 @@ public class Services {
 
   public static Services getInstance() {
     if (services == null) {
-      initServices();
+      try {
+        semaphore.acquire();
+      }
+      catch (Exception ex) {
+        throw new IllegalStateException(ex);
+      }
+      try {
+        initServices();
+      }
+      finally {
+        semaphore.release();
+      }
     }
     return services;
   }

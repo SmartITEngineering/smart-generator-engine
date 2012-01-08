@@ -111,5 +111,7 @@ public final class Initializer {
     }
     //DI Generator Engine
     GuiceUtil.getInstance(PROP_FILE).register();
+    //Initialize Smart Email Queue
+    com.smartitengineering.emailq.binder.guice.Initializer.init();
   }
 }

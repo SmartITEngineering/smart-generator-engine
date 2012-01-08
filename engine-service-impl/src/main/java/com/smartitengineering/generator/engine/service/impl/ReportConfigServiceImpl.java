@@ -1,6 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *
+ * This is a simple Email Queue management system
+ * Copyright (C) 2011  Imran M Yousuf (imyousuf@smartitengineering.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.smartitengineering.generator.engine.service.impl;
 
@@ -12,6 +26,7 @@ import com.smartitengineering.cms.api.content.MutableCollectionFieldValue;
 import com.smartitengineering.cms.api.content.MutableCompositeFieldValue;
 import com.smartitengineering.cms.api.content.MutableField;
 import com.smartitengineering.cms.api.content.MutableStringFieldValue;
+import com.smartitengineering.cms.api.content.Representation;
 import com.smartitengineering.cms.api.factory.SmartContentAPI;
 import com.smartitengineering.cms.api.factory.content.ContentLoader;
 import com.smartitengineering.cms.api.factory.content.WriteableContent;
@@ -26,11 +41,14 @@ import com.smartitengineering.dao.common.CommonWriteDao;
 import com.smartitengineering.dao.common.queryparam.MatchMode;
 import com.smartitengineering.dao.common.queryparam.QueryParameter;
 import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
+import com.smartitengineering.emailq.domain.Email;
+import com.smartitengineering.emailq.service.Services;
 import com.smartitengineering.generator.engine.domain.CodeOnDemand;
 import com.smartitengineering.generator.engine.domain.Map;
 import com.smartitengineering.generator.engine.domain.Map.Entries;
 import com.smartitengineering.generator.engine.domain.Report;
 import com.smartitengineering.generator.engine.domain.ReportConfig;
+import com.smartitengineering.generator.engine.domain.ReportConfig.EmailConfig;
 import com.smartitengineering.generator.engine.domain.ReportEvent;
 import com.smartitengineering.generator.engine.domain.SourceCode;
 import com.smartitengineering.generator.engine.domain.SourceCode.Code;
@@ -46,6 +64,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,6 +99,9 @@ public class ReportConfigServiceImpl implements ReportConfigService {
   private static final int DEFAULT_SCHEDULE_SIZE = 100;
   public static final String INJECT_NAME_NUM_OF_SCHEDULES = "numberOfSchedulesToReside";
   public static final String INJECT_NAME_EXECUTION_SERVICE = "reportGenerationExec";
+  public static final String FROM_ADDRESS = "fromAddressString";
+  public static final String DEFAULT_BODY = "defaultBodyString";
+  public static final String MIME_TYPE_FILE_EXT_MAP = "mimeTypeFileExtMap";
   @Inject
   protected CommonReadDao<ReportConfig, String> commonReadDao;
   @Inject
@@ -100,6 +122,15 @@ public class ReportConfigServiceImpl implements ReportConfigService {
   @Inject
   @Named(INJECT_NAME_EXECUTION_SERVICE)
   private ExecutorService executor;
+  @Inject
+  @Named(FROM_ADDRESS)
+  private String fromAddress;
+  @Inject
+  @Named(DEFAULT_BODY)
+  private String defaultBody;
+  @Inject
+  @Named(MIME_TYPE_FILE_EXT_MAP)
+  private java.util.Map<String, String> mimeTypeFileExtMap;
   protected final transient Logger logger = LoggerFactory.getLogger(getClass());
   private final Semaphore syncMutex = new Semaphore(1);
   private final Semaphore reportMutex = new Semaphore(1);
@@ -325,6 +356,60 @@ public class ReportConfigServiceImpl implements ReportConfigService {
                 getContentId(workspaceId, reportEvent.getId())));
             //Save content
             content.put();
+            //Email representation as per config
+            Collection<EmailConfig> emailConfigs = reportConfig.getEmailConfig();
+            for (EmailConfig emailConfig : emailConfigs) {
+              final String representationName = emailConfig.getRepresentationName();
+              if (StringUtils.isNotBlank(representationName)) {
+                Representation representation = content.getRepresentation(representationName);
+                final byte[] representationData = representation != null ? representation.getRepresentation() : null;
+                if (representationData != null && representationData.length > 0) {
+                  Email email = new Email();
+                  final String mimeType = representation.getMimeType();
+                  if ("text/plain".equals(mimeType)) {
+                    Email.Message message = new Email.Message();
+                    message.setMsgType(Email.Message.MsgType.PLAIN);
+                    message.setMsgBody(new String(representationData));
+                    email.setMessage(message);
+                  }
+                  else if ("text/html".equals(mimeType)) {
+                    Email.Message message = new Email.Message();
+                    message.setMsgType(Email.Message.MsgType.HTML);
+                    message.setMsgBody(new String(representationData));
+                    email.setMessage(message);
+                  }
+                  else {
+                    Email.Attachments attachment = new Email.Attachments();
+                    attachment.setContentType(mimeType);
+                    String reportTitle = content.getField(Report.PROPERTY_NAME).getValue().toString().replaceAll(
+                        "\\s+", "_");
+                    StringBuilder attachmentName = new StringBuilder(reportTitle);
+                    if (mimeTypeFileExtMap.containsKey(mimeType)) {
+                      attachmentName.append('.').append(mimeTypeFileExtMap.get(mimeType));
+                    }
+                    attachment.setName(attachmentName.toString());
+                    attachment.setDescription("Report");
+                    attachment.setBlob(representationData);
+                    email.setAttachments(Arrays.asList(attachment));
+                    Email.Message message = new Email.Message();
+                    message.setMsgType(Email.Message.MsgType.PLAIN);
+                    message.setMsgBody(defaultBody);
+                    email.setMessage(message);
+                  }
+                  email.setSubject(emailConfig.getSubject());
+                  email.setFrom(fromAddress);
+                  email.setTo(emailConfig.getTo());
+                  email.setCc(emailConfig.getCc());
+                  email.setBcc(emailConfig.getBcc());
+                  try {
+                    Services.getInstance().getEmailService().saveEmail(email);
+                  }
+                  catch (Exception ex) {
+                    logger.error("Could put email to the queue", ex);
+                  }
+                }
+              }
+            }
           }
           else {
             throw new IllegalStateException("Content created as REPORT ain't instance of " + reportTypeId);

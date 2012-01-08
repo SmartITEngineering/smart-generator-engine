@@ -5,6 +5,7 @@
 package com.smartitengineering.generator.engine.guice.binder;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.smartitengineering.cms.api.factory.SmartContentAPI;
 import com.smartitengineering.cms.api.type.ContentTypeId;
@@ -14,6 +15,8 @@ import com.smartitengineering.generator.engine.service.ReportService;
 import com.smartitengineering.generator.engine.service.impl.ReportConfigServiceImpl;
 import com.smartitengineering.generator.engine.service.impl.ReportServiceImpl;
 import com.smartitengineering.util.bean.PropertiesLocator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,12 +31,17 @@ public class APIModule extends AbstractModule {
   public static final String WORKSPACE_PROPS = "domainProps";
   public static final String CONCURRENT_REPORT_THREADS_PROPS = "concurrentReportThreads";
   public static final String REPORT_EVENT_BATCH_SIZE_PROPS = "reportEventBatchSize";
+  public static final String FROM_ADDRESS = "fromAddress";
+  public static final String DEFAULT_BODY = "defaultBody";
   private final String workspaceIdNamespace;
   private final String workspaceIdName;
   private final String reportNamespace;
   private final String reportName;
+  private final String fromAddress;
+  private final String defaultBody;
   private final int concurrentReportThreads;
   private final int reportEventScheudleBatchSize;
+  private final Map<String, String> extensions = new HashMap<String, String>();
 
   public APIModule(Properties properties) {
     if (properties == null) {
@@ -43,6 +51,8 @@ public class APIModule extends AbstractModule {
       reportName = "";
       concurrentReportThreads = 4;
       reportEventScheudleBatchSize = 100;
+      fromAddress = "noreply";
+      defaultBody = "";
     }
     else {
       PropertiesLocator propertiesLocator = new PropertiesLocator();
@@ -62,6 +72,19 @@ public class APIModule extends AbstractModule {
       reportName = mainProps.getProperty("com.smartitengineering.generator.engine.domains.report.name", "");
       concurrentReportThreads = NumberUtils.toInt(properties.getProperty(CONCURRENT_REPORT_THREADS_PROPS, "4"), 4);
       reportEventScheudleBatchSize = NumberUtils.toInt(properties.getProperty(REPORT_EVENT_BATCH_SIZE_PROPS, "10"), 100);
+      fromAddress = properties.getProperty(FROM_ADDRESS);
+      defaultBody = properties.getProperty(DEFAULT_BODY);
+      final String prefix = "extension.";
+      final int substringFrom = prefix.length();
+      for (String key : properties.stringPropertyNames()) {
+        if (key.startsWith(prefix)) {
+          String[] mimes = properties.getProperty(key).split(",");
+          final String ext = key.substring(substringFrom);
+          for (String mime : mimes) {
+            extensions.put(mime, ext);
+          }
+        }
+      }
     }
   }
 
@@ -79,6 +102,10 @@ public class APIModule extends AbstractModule {
         toInstance(reportTypeId);
     bind(int.class).annotatedWith(Names.named(ReportConfigServiceImpl.INJECT_NAME_NUM_OF_SCHEDULES)).toInstance(
         reportEventScheudleBatchSize);
+    bind(String.class).annotatedWith(Names.named(ReportConfigServiceImpl.FROM_ADDRESS)).toInstance(fromAddress);
+    bind(String.class).annotatedWith(Names.named(ReportConfigServiceImpl.DEFAULT_BODY)).toInstance(defaultBody);
+    bind(new TypeLiteral<Map<String, String>>() {
+    }).annotatedWith(Names.named(ReportConfigServiceImpl.MIME_TYPE_FILE_EXT_MAP)).toInstance(extensions);
     try {
       ExecutorService service = Executors.newFixedThreadPool(concurrentReportThreads);
       bind(ExecutorService.class).annotatedWith(Names.named(ReportConfigServiceImpl.INJECT_NAME_EXECUTION_SERVICE)).
